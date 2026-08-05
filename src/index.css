@@ -1,0 +1,1068 @@
+/* ==========================================================================
+   ePavti Book — Global Design Tokens & Base Styles
+   Loaded once (via main.jsx) so the whole app shares one consistent look.
+   These are additive CSS variables/utilities — Bootstrap classes used across
+   the app keep working exactly as before, this just layers a refined
+   visual system on top (colors, spacing, motion, states).
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+:root {
+  /* Brand */
+  --ep-primary: #4f46e5;
+  --ep-primary-dark: #4338ca;
+  --ep-primary-light: #eef2ff;
+  --ep-primary-rgb: 79, 70, 229;
+
+  /* Semantic */
+  --ep-success: #10b981;
+  --ep-success-dark: #059669;
+  --ep-success-light: #ecfdf5;
+  --ep-warning: #f59e0b;
+  --ep-warning-light: #fffbeb;
+  --ep-danger: #ef4444;
+  --ep-danger-light: #fef2f2;
+  --ep-info: #0ea5e9;
+  --ep-info-light: #f0f9ff;
+
+  /* Neutrals */
+  --ep-bg: #f5f6fa;
+  --ep-surface: #ffffff;
+  --ep-border: #e5e7eb;
+  --ep-border-soft: #eef0f4;
+  --ep-text: #111827;
+  --ep-text-muted: #6b7280;
+  --ep-text-faint: #9ca3af;
+
+  /* Shape */
+  --ep-radius-sm: 10px;
+  --ep-radius-md: 16px;
+  --ep-radius-lg: 22px;
+  --ep-radius-pill: 999px;
+
+  /* Elevation */
+  --ep-shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --ep-shadow-md: 0 4px 16px rgba(16, 24, 40, 0.08);
+  --ep-shadow-lg: 0 16px 40px rgba(16, 24, 40, 0.14);
+
+  /* Motion */
+  --ep-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ep-fast: 150ms;
+  --ep-normal: 220ms;
+
+  --ep-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--ep-font);
+  background-color: var(--ep-bg);
+  color: var(--ep-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ep-font);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ep-text);
+}
+
+/* Focus visibility for keyboard users (accessibility, not a visual regression) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--ep-primary);
+  outline-offset: 2px;
+}
+
+/* Slim, unobtrusive scrollbars for the app's many scrollable panels */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd0dc transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #cbd0dc;
+  border-radius: var(--ep-radius-pill);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #aab0bf;
+}
+
+/* ==========================================================================
+   Reusable UI-kit primitives (skeletons, toasts, empty states, stat cards)
+   Scoped under ep- prefixes so they never collide with existing classes.
+   ========================================================================== */
+
+/* --- Skeleton loaders --- */
+.ep-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e9ebf1;
+  border-radius: var(--ep-radius-sm);
+}
+
+.ep-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: ep-shimmer 1.4s infinite;
+}
+
+@keyframes ep-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ep-skeleton::after {
+    animation: none;
+  }
+}
+
+.ep-skeleton-text {
+  height: 0.85em;
+  margin-bottom: 0.5em;
+}
+
+.ep-skeleton-title {
+  height: 1.4em;
+  width: 45%;
+  margin-bottom: 0.75em;
+}
+
+.ep-skeleton-card {
+  height: 96px;
+  border-radius: var(--ep-radius-md);
+}
+
+.ep-skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.ep-skeleton-row {
+  height: 1em;
+  border-radius: 6px;
+}
+
+/* --- Empty state --- */
+.ep-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--ep-text-muted);
+}
+
+.ep-empty-state-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--ep-primary-light);
+  color: var(--ep-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.ep-empty-state-title {
+  font-weight: 600;
+  color: var(--ep-text);
+  margin-bottom: 0.25rem;
+}
+
+.ep-empty-state-subtitle {
+  font-size: 0.9rem;
+  max-width: 340px;
+  margin-bottom: 1rem;
+}
+
+/* --- Stat / KPI cards (glassmorphism) --- */
+.ep-stat-card {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--ep-radius-lg);
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.35));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(31, 41, 55, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  color: var(--ep-text);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--ep-normal) var(--ep-ease), box-shadow var(--ep-normal) var(--ep-ease);
+}
+
+.ep-stat-card::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 65%;
+  height: 140%;
+  border-radius: 50%;
+  opacity: 0.14;
+  filter: blur(6px);
+  background: var(--ep-stat-tint, var(--ep-primary));
+  pointer-events: none;
+}
+
+.ep-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(31, 41, 55, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.ep-stat-card .ep-stat-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #fff;
+  box-shadow: 0 6px 16px var(--ep-stat-shadow, rgba(79, 70, 229, 0.35));
+  background: var(--ep-stat-tint, var(--ep-primary));
+  position: relative;
+}
+
+.ep-stat-card .ep-stat-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ep-text-muted);
+  margin-bottom: 0.3rem;
+  position: relative;
+}
+
+.ep-stat-card .ep-stat-value {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  position: relative;
+  background: var(--ep-stat-tint, var(--ep-primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ep-stat-card .ep-stat-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--ep-radius-pill);
+  position: relative;
+}
+
+.ep-stat-card .ep-stat-trend--up {
+  color: var(--ep-success-dark);
+  background: var(--ep-success-light);
+}
+
+.ep-stat-card .ep-stat-trend--down {
+  color: #b91c1c;
+  background: var(--ep-danger-light);
+}
+
+.ep-stat-card--indigo { --ep-stat-tint: linear-gradient(135deg, #6366f1, #4338ca); --ep-stat-shadow: rgba(79, 70, 229, 0.35); }
+.ep-stat-card--teal { --ep-stat-tint: linear-gradient(135deg, #14b8a6, #0f766e); --ep-stat-shadow: rgba(15, 118, 110, 0.35); }
+.ep-stat-card--amber { --ep-stat-tint: linear-gradient(135deg, #f59e0b, #d97706); --ep-stat-shadow: rgba(217, 119, 6, 0.35); }
+.ep-stat-card--rose { --ep-stat-tint: linear-gradient(135deg, #fb7185, #e11d48); --ep-stat-shadow: rgba(225, 29, 72, 0.35); }
+
+/* --- Generic surface card polish (glassmorphism) --- */
+.ep-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--ep-radius-lg);
+  box-shadow: 0 8px 32px rgba(31, 41, 55, 0.06);
+}
+
+.ep-transition {
+  transition: all var(--ep-normal) var(--ep-ease);
+}
+
+/* --- Toast polish (layered on top of react-bootstrap's Toast) --- */
+.ep-toast {
+  border: none !important;
+  border-radius: var(--ep-radius-md) !important;
+  box-shadow: var(--ep-shadow-lg) !important;
+  overflow: hidden;
+}
+
+.ep-toast .toast-body {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 500;
+  padding: 0.9rem 1rem;
+}
+
+.ep-toast--success { border-left: 4px solid var(--ep-success) !important; }
+.ep-toast--error { border-left: 4px solid var(--ep-danger) !important; }
+.ep-toast--info { border-left: 4px solid var(--ep-info) !important; }
+
+/* ==========================================================================
+   Festival theme layer — used on public-facing pages (Sign In / Sign Up /
+   landing) to give a premium, celebratory Ganpati-festival feel, while the
+   internal dashboards keep the calmer indigo SaaS palette from Phase 1.
+   Pure CSS only — no animation libraries, per the "zero new deps" call.
+   ========================================================================== */
+
+:root {
+  --ep-festive-maroon: #4a0e1f;
+  --ep-festive-vermilion: #e2583e;
+  --ep-festive-marigold: #f4a300;
+  --ep-festive-gold: #ffcf5c;
+}
+
+.ep-festive-bg {
+  position: relative;
+  min-height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(120deg, var(--ep-festive-maroon) 0%, #6b1530 45%, var(--ep-festive-vermilion) 100%);
+  background-size: 200% 200%;
+  animation: ep-gradient-shift 14s ease infinite;
+}
+
+@keyframes ep-gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Soft glowing "diya" orbs drifting in the background — pure CSS, no assets */
+.ep-festive-bg::before,
+.ep-festive-bg::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.ep-festive-bg::before {
+  width: 380px;
+  height: 380px;
+  background: var(--ep-festive-marigold);
+  top: -80px;
+  left: -100px;
+  animation: ep-drift-a 16s ease-in-out infinite;
+}
+
+.ep-festive-bg::after {
+  width: 320px;
+  height: 320px;
+  background: var(--ep-festive-gold);
+  bottom: -100px;
+  right: -80px;
+  animation: ep-drift-b 18s ease-in-out infinite;
+}
+
+@keyframes ep-drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, 40px) scale(1.15); }
+}
+
+@keyframes ep-drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, -30px) scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ep-festive-bg,
+  .ep-festive-bg::before,
+  .ep-festive-bg::after {
+    animation: none;
+  }
+}
+
+/* Glass card used for auth forms over the festive background */
+.ep-glass-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--ep-radius-lg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.ep-festive-accent-bar {
+  height: 5px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--ep-festive-marigold), var(--ep-festive-vermilion), var(--ep-festive-gold));
+  border-radius: var(--ep-radius-pill) var(--ep-radius-pill) 0 0;
+}
+
+.ep-float {
+  animation: ep-float-y 4.5s ease-in-out infinite;
+}
+
+@keyframes ep-float-y {
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  50% { transform: translateY(-14px) rotate(1deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ep-float { animation: none; }
+}
+
+/* Festive primary button (marigold -> vermilion) for auth / donation CTAs */
+.btn-festive {
+  background: linear-gradient(135deg, var(--ep-festive-marigold), var(--ep-festive-vermilion));
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  border-radius: var(--ep-radius-sm);
+  transition: transform var(--ep-fast) var(--ep-ease), box-shadow var(--ep-fast) var(--ep-ease);
+  box-shadow: 0 8px 20px rgba(226, 88, 62, 0.35);
+}
+
+.btn-festive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(226, 88, 62, 0.45);
+  color: #fff;
+}
+
+.btn-festive:disabled {
+  opacity: 0.7;
+  transform: none;
+}
+
+.ep-input-group {
+  position: relative;
+}
+
+.ep-input-group .ep-input-icon-btn {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  color: var(--ep-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.ep-field-error {
+  color: var(--ep-danger);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.ep-field-invalid {
+  border-color: var(--ep-danger) !important;
+}
+
+.ep-field-invalid:focus {
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Small festive banner strip usable at the top of dashboards */
+.ep-festive-banner {
+  border-radius: var(--ep-radius-lg);
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(120deg, var(--ep-festive-maroon), var(--ep-festive-vermilion) 60%, var(--ep-festive-marigold) 130%);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.ep-festive-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 85% 20%, rgba(255, 207, 92, 0.35), transparent 55%);
+}
+
+/* ==========================================================================
+   Glassmorphism dashboard system (Phase 3) — mesh background, glass sidebar,
+   badges, modern data tables, and chart cards. Inspired by glass finance /
+   habit-tracker / IoT-monitoring dashboard layouts: soft mesh backdrops,
+   frosted layered cards, gradient icon chips, generous radius, calm shadows.
+   Pure CSS — no new dependencies.
+   ========================================================================== */
+
+/* Soft animated mesh background used behind the whole app shell so glass
+   cards have something translucent worth showing through. */
+.ep-mesh-bg {
+  position: relative;
+  background-color: #eef1fb;
+  background-image:
+    radial-gradient(at 15% 20%, rgba(99, 102, 241, 0.16) 0px, transparent 50%),
+    radial-gradient(at 85% 10%, rgba(20, 184, 166, 0.14) 0px, transparent 50%),
+    radial-gradient(at 90% 80%, rgba(245, 158, 11, 0.12) 0px, transparent 50%),
+    radial-gradient(at 10% 90%, rgba(236, 72, 153, 0.10) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Glass sidebar (dark, frosted) */
+.ep-glass-sidebar {
+  background: linear-gradient(180deg, rgba(30, 27, 75, 0.92), rgba(49, 46, 129, 0.92));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ep-glass-sidebar .ep-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: var(--ep-radius-sm);
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 500;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: background var(--ep-fast) ease, color var(--ep-fast) ease, transform var(--ep-fast) ease;
+}
+
+.ep-glass-sidebar .ep-nav-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  transform: translateX(2px);
+}
+
+.ep-glass-sidebar .ep-nav-link.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+/* Badges (used in tables for status / payment mode / role) */
+.ep-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--ep-radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.ep-badge--success { background: var(--ep-success-light); color: var(--ep-success-dark); }
+.ep-badge--warning { background: var(--ep-warning-light); color: #b45309; }
+.ep-badge--danger { background: var(--ep-danger-light); color: #b91c1c; }
+.ep-badge--info { background: var(--ep-info-light); color: #0369a1; }
+.ep-badge--neutral { background: #f1f2f6; color: var(--ep-text-muted); }
+.ep-badge--indigo { background: var(--ep-primary-light); color: var(--ep-primary-dark); }
+
+/* Modern data table shell — glass card wrapper with sticky header */
+.ep-datatable-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--ep-radius-lg);
+  box-shadow: 0 8px 32px rgba(31, 41, 55, 0.06);
+  overflow: hidden;
+}
+
+.ep-datatable-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.06);
+}
+
+.ep-datatable-search {
+  position: relative;
+  flex: 1 1 240px;
+  max-width: 320px;
+}
+
+.ep-datatable-search input {
+  width: 100%;
+  padding: 0.5rem 0.85rem 0.5rem 2.3rem;
+  border-radius: var(--ep-radius-pill);
+  border: 1px solid var(--ep-border);
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 0.88rem;
+}
+
+.ep-datatable-search input:focus {
+  outline: none;
+  border-color: var(--ep-primary);
+  box-shadow: 0 0 0 0.15rem rgba(var(--ep-primary-rgb), 0.15);
+}
+
+.ep-datatable-search i {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ep-text-faint);
+}
+
+.ep-datatable-scroll {
+  overflow: auto;
+}
+
+.ep-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.9rem;
+}
+
+.ep-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgba(249, 250, 252, 0.92);
+  backdrop-filter: blur(8px);
+  text-align: left;
+  padding: 0.75rem 1.1rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ep-text-muted);
+  border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+  white-space: nowrap;
+}
+
+.ep-table tbody td {
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.05);
+  vertical-align: middle;
+}
+
+.ep-table tbody tr {
+  transition: background var(--ep-fast) ease;
+}
+
+.ep-table tbody tr:hover {
+  background: rgba(99, 102, 241, 0.06);
+}
+
+.ep-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Chart card + lightweight SVG chart primitives (no chart library) */
+.ep-chart-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--ep-radius-lg);
+  box-shadow: 0 8px 32px rgba(31, 41, 55, 0.06);
+  padding: 1.5rem;
+}
+
+.ep-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.55rem;
+  height: 160px;
+  padding-top: 0.5rem;
+}
+
+.ep-bar-chart .ep-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.ep-bar-chart .ep-bar {
+  width: 100%;
+  max-width: 26px;
+  border-radius: 8px 8px 3px 3px;
+  background: linear-gradient(180deg, #818cf8, #4f46e5);
+  transition: transform var(--ep-fast) ease, filter var(--ep-fast) ease;
+  min-height: 4px;
+}
+
+.ep-bar-chart .ep-bar-col:hover .ep-bar {
+  filter: brightness(1.1);
+  transform: scaleY(1.02);
+}
+
+.ep-bar-chart .ep-bar-label {
+  font-size: 0.7rem;
+  color: var(--ep-text-muted);
+  font-weight: 600;
+}
+
+/* Quick-action tiles */
+.ep-quick-action {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1.1rem;
+  border-radius: var(--ep-radius-md);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-decoration: none;
+  color: var(--ep-text);
+  transition: transform var(--ep-fast) ease, box-shadow var(--ep-fast) ease;
+}
+
+.ep-quick-action:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(31, 41, 55, 0.1);
+  color: var(--ep-text);
+}
+
+.ep-quick-action .ep-quick-action-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+/* Activity feed */
+.ep-activity-item {
+  display: flex;
+  gap: 0.85rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.05);
+}
+
+.ep-activity-item:last-child {
+  border-bottom: none;
+}
+
+.ep-activity-dot {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  color: #fff;
+}
+
+/* Glass modal (react-bootstrap Modal override) */
+.ep-glass-modal .modal-content {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--ep-radius-lg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive helpers for dashboard grids */
+@media (max-width: 767.98px) {
+  .ep-stat-card { padding: 1.15rem; }
+  .ep-stat-card .ep-stat-value { font-size: 1.5rem; }
+  .ep-datatable-toolbar { flex-direction: column; align-items: stretch; }
+  .ep-datatable-search { max-width: 100%; }
+}
+
+/* Glass top navbar (event-manager area) */
+.ep-glass-navbar {
+  background: linear-gradient(120deg, rgba(30, 27, 75, 0.92), rgba(67, 56, 202, 0.9)) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(31, 41, 55, 0.12);
+}
+
+.ep-glass-navbar .nav-link {
+  border-radius: var(--ep-radius-sm);
+  padding: 0.5rem 0.85rem !important;
+  transition: background var(--ep-fast) ease, transform var(--ep-fast) ease;
+}
+
+.ep-glass-navbar .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.ep-glass-navbar .nav-link.active {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ==========================================================================
+   Shareable donation receipt — designed to be captured via html2canvas and
+   posted as a WhatsApp/Instagram story or status. Deliberately avoids
+   backdrop-filter/blur on the captured card itself (html2canvas renders
+   those unreliably) — uses layered opaque gradients instead so the
+   downloaded PNG matches what's on screen exactly.
+   ========================================================================== */
+
+.ep-receipt-page {
+  min-height: 100dvh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(145deg, #3a0a18 0%, #6b1530 40%, #b83b2e 75%, #e2583e 100%);
+}
+
+.ep-receipt-page::before,
+.ep-receipt-page::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.ep-receipt-page::before {
+  width: 420px;
+  height: 420px;
+  background: #f4a300;
+  top: -120px;
+  left: -120px;
+}
+
+.ep-receipt-page::after {
+  width: 380px;
+  height: 380px;
+  background: #ffcf5c;
+  bottom: -140px;
+  right: -100px;
+}
+
+.ep-receipt-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 28px;
+  padding: 2px;
+  background: linear-gradient(155deg, #ffd873, #f4a300 40%, #e2583e 100%);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+}
+
+.ep-receipt-card-inner {
+  border-radius: 26px;
+  background: linear-gradient(165deg, #fffaf0 0%, #fdf1dc 55%, #fbe8c9 100%);
+  padding: 2rem 1.5rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.ep-receipt-card-inner::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244, 163, 0, 0.35), transparent 70%);
+  pointer-events: none;
+}
+
+.ep-receipt-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a3441f;
+  margin-bottom: 0.5rem;
+}
+
+.ep-receipt-mascot {
+  width: 92px;
+  height: 92px;
+  margin: 0.25rem auto 0.75rem;
+  position: relative;
+}
+
+.ep-receipt-thankyou {
+  font-family: "Great Vibes", "Segoe UI", cursive;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: #a3441f;
+  margin-bottom: 0.15rem;
+}
+
+.ep-receipt-donor-name {
+  font-family: "Cinzel Decorative", "Inter", serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #4a0e1f;
+  margin-bottom: 0.35rem;
+  word-break: break-word;
+}
+
+.ep-receipt-org {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #7a3418;
+  margin-bottom: 1.1rem;
+  line-height: 1.4;
+}
+
+.ep-receipt-amount-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #f4a300, #e2583e);
+  color: #fff;
+  border-radius: 20px;
+  padding: 0.7rem 1.8rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 10px 26px rgba(226, 88, 62, 0.4);
+}
+
+.ep-receipt-amount-badge .amount {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.ep-receipt-amount-badge .label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+}
+
+.ep-receipt-meta {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(163, 68, 31, 0.15);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+}
+
+.ep-receipt-meta li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: #5c2a15;
+  padding: 0.28rem 0;
+}
+
+.ep-receipt-meta li i {
+  color: #d97706;
+  width: 16px;
+  text-align: center;
+}
+
+.ep-receipt-qr-box {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border-radius: 16px;
+  padding: 0.75rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  margin-bottom: 0.75rem;
+}
+
+.ep-receipt-qr-caption {
+  font-size: 0.68rem;
+  color: #7a3418;
+  font-weight: 600;
+  margin-top: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ep-receipt-divider {
+  width: 60%;
+  height: 1px;
+  margin: 0.5rem auto 0.9rem;
+  background: linear-gradient(90deg, transparent, rgba(163, 68, 31, 0.35), transparent);
+}
+
+.ep-receipt-tagline {
+  font-size: 0.78rem;
+  color: #8a5a3a;
+  font-style: italic;
+  margin: 0;
+}
+
+.ep-receipt-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.ep-receipt-actions .btn {
+  flex: 1;
+  border-radius: 14px;
+  padding: 0.7rem 0.5rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 400px) {
+  .ep-receipt-card-inner { padding: 1.6rem 1.1rem 1.25rem; }
+  .ep-receipt-thankyou { font-size: 2.1rem; }
+  .ep-receipt-donor-name { font-size: 1.15rem; }
+  .ep-receipt-amount-badge .amount { font-size: 1.6rem; }
+}

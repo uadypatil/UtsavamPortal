@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 // Bootstrap must be installed in the host project: npm install bootstrap
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../../../app.css";
+import "../../../App.css";
 
 /* ============================================================
    Hero image credit

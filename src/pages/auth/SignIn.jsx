@@ -8,7 +8,7 @@ import '../../App.css';
 import api_url from '../../config/apiConfig';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../context/ToastContext';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/UtsavamLogoMain.png';
 import ganesha from '../../assets/animatedganesha.png';
 
 function SignIn() {
@@ -75,7 +75,7 @@ function SignIn() {
             <div className="row w-100 justify-content-center align-items-center" style={{ maxWidth: 960 }}>
                 {/* Left: brand / mascot panel (hidden on small screens) */}
                 <div className="col-lg-5 d-none d-lg-flex flex-column align-items-center text-center text-white px-4" data-aos="fade-right">
-                    <img src={logo} alt="ePavti Book" style={{ width: 160, marginBottom: '1.5rem' }} />
+                    <img src={logo} alt="ePavti Book" style={{ width: 190, marginBottom: '1.5rem' }} />
                     <img src={ganesha} alt="" className="ep-float" style={{ width: 200, marginBottom: '1.5rem' }} />
                     <h2 className="fw-bold">Welcome back</h2>
                     <p className="opacity-75">
@@ -89,7 +89,7 @@ function SignIn() {
                         <div className="ep-festive-accent-bar"></div>
                         <div className="p-4 p-md-5">
                             <div className="text-center mb-4 d-lg-none">
-                                <img src={logo} alt="ePavti Book" style={{ width: 110 }} />
+                                <img src={logo} alt="ePavti Book" style={{ width: 210 }} />
                             </div>
                             <h1 className="h3 fw-bold text-center mb-1">Sign In</h1>
                             <p className="text-muted text-center mb-4">Enter your credentials to continue</p>
@@ -139,14 +139,14 @@ function SignIn() {
                                         <>
                                             <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                                             Signing in...
-                                        </>
+                                        </> 
                                     ) : (
                                         'Sign In'
                                     )}
                                 </button>
 
                                 <p className="text-center text-muted mt-4 mb-0">
-                                    Don't have an account? <Link to="/signup" className="fw-semibold">Sign up</Link>
+                                    <Link to="/signup" className="fw-semibold">Forgot your password?</Link>
                                 </p>
                             </form>
                         </div>

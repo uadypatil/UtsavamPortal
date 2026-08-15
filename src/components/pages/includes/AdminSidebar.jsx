@@ -1,13 +1,14 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import logo from '../../../assets/logo.png';
+import logo from '../../../assets/UtsavamLogoMain.png';
 import { Link, useLocation } from "react-router-dom";
 
 const NAV_ITEMS = [
     { to: 'dashboard', label: 'Dashboard', icon: 'bi-speedometer2' },
     { to: 'events/all', label: 'Event', icon: 'bi-calendar-event' },
-    { to: 'events/managers', label: 'Event Managers', icon: 'bi-people-fill' },
+    { to: 'events/managers', label: 'Donation Collector', icon: 'bi-people-fill' },
+    { to: 'events/managers', label: 'Expences Manager', icon: 'bi-people-fill' },
     { to: 'reports', label: 'Revenue Report', icon: 'bi-graph-up-arrow' },
 ];
 
@@ -32,8 +33,8 @@ function AdminSidebar() {
             {/* Sidebar for large screens */}
             <div className="text-white m-2 rounded rounded-5 admin-sidebar ep-glass-sidebar d-none d-lg-block" style={{ position: 'fixed' }}>
                 <div className="mb-2 d-flex justify-content-center text-center w-100 pt-4" style={{ flexDirection: 'column' }}>
-                    <div className="mx-auto p-2 rounded-4" style={{ background: 'rgba(255,255,255,0.9)', width: 'fit-content' }}>
-                        <img src={logo} alt="Logo" className="img-fluid" style={{ maxWidth: 140 }} />
+                    <div className="mx-auto rounded-4" style={{ background: 'rgba(255,255,255,0.9)', width: 'fit-content' }}>
+                        <img src={logo} alt="Logo" className="img-fluid" style={{ maxWidth: 160 }} />
                     </div>
                 </div>
 

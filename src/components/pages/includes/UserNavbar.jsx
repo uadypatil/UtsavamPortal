@@ -2,7 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../../../assets/logo.png';
+import logo from '../../../assets/utsavamLogoBeside.png';
 
 const NAV_ITEMS = [
     { to: '/em/dashboard', label: 'Dashboard', icon: 'bi-speedometer2' },

@@ -2277,3 +2277,232 @@ body.u-body{
 .u-footer-social a{ width:36px; height:36px; border-radius:50%; border:1px solid var(--hairline); display:flex; align-items:center; justify-content:center; color:var(--charcoal-60); transition:.25s; }
 .u-footer-social a:hover{ background:var(--charcoal); color:#fff; border-color:var(--charcoal); }
 .u-footer-closing{ text-align:center; font-family:var(--font-display); font-style:italic; font-size:15px; color:var(--charcoal-60); margin-top:28px; }
+
+/* =========================================
+   EVENT MANAGEMENT - DASHBOARD DESIGN
+   ========================================= */
+/*
+|--------------------------------------------------------------------------
+| Collection Executive — premium layer
+|--------------------------------------------------------------------------
+| This file is additive on top of the existing App.css / ep-* design
+| system. Nothing here overrides layout or color tokens defined globally —
+| it only adds warmth, motion, and a couple of new components (toasts,
+| error state) that don't exist yet elsewhere in the app.
+*/
+
+.cx-page {
+    --cx-gold: #d9a441;
+    --cx-gold-soft: #f4e3bd;
+    --cx-maroon: #7a1f2b;
+    --cx-indigo: #4c1d95;
+    --cx-teal: #0f766e;
+    --cx-ink: #2a2118;
+}
+
+/* Festive banner: warm gradient + a soft diya glow in the corner */
+.cx-banner {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+        120deg,
+        var(--cx-indigo) 0%,
+        #6d28d9 45%,
+        var(--cx-maroon) 100%
+    );
+}
+
+.cx-banner::after {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(217, 164, 65, 0.55) 0%,
+        rgba(217, 164, 65, 0) 70%
+    );
+    pointer-events: none;
+}
+
+.cx-add-btn {
+    box-shadow: 0 8px 20px -6px rgba(76, 29, 149, 0.55);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.cx-add-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -6px rgba(76, 29, 149, 0.65);
+}
+
+/* Stat cards get a touch more lift on hover */
+.cx-stat {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cx-stat:hover {
+    transform: translateY(-2px);
+}
+
+/* Main card */
+.cx-card {
+    position: relative;
+}
+
+/* Avatar: subtle gradient instead of a flat fill, feels more crafted */
+.cx-avatar {
+    background: linear-gradient(135deg, var(--cx-indigo), #7c3aed);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 8px -2px rgba(76, 29, 149, 0.5);
+}
+
+/* Table rows: gentle hover lift, disabled rows read clearly muted */
+.ep-data-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.ep-row-disabled {
+    opacity: 0.62;
+}
+
+/* Modal entrance animation */
+.cx-backdrop {
+    animation: cx-fade-in 0.15s ease-out;
+}
+
+.cx-modal-pop {
+    animation: cx-pop-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cx-modal-wide {
+    max-width: 720px;
+}
+
+@keyframes cx-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes cx-pop-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Error state — reuses ep-empty-state layout, tints the icon for a warning read */
+.cx-error-icon {
+    color: #b91c1c;
+    background: rgba(185, 28, 28, 0.08);
+}
+
+/* -------------------------------------------------------------------- */
+/* Toasts                                                                */
+/* -------------------------------------------------------------------- */
+
+.cx-toast-stack {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1080;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: min(360px, calc(100vw - 32px));
+}
+
+.cx-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 12px 28px -8px rgba(20, 15, 10, 0.28);
+    border-left: 4px solid var(--cx-teal, #0f766e);
+    font-size: 0.9rem;
+    color: var(--cx-ink, #2a2118);
+    animation: cx-toast-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cx-toast i {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.cx-toast--success {
+    border-left-color: #0f766e;
+}
+
+.cx-toast--success i {
+    color: #0f766e;
+}
+
+.cx-toast--warning {
+    border-left-color: #d9a441;
+}
+
+.cx-toast--warning i {
+    color: #b7791f;
+}
+
+.cx-toast--error {
+    border-left-color: #b91c1c;
+}
+
+.cx-toast--error i {
+    color: #b91c1c;
+}
+
+.cx-toast span {
+    flex: 1;
+    line-height: 1.35;
+}
+
+.cx-toast__close {
+    border: none;
+    background: transparent;
+    color: inherit;
+    opacity: 0.5;
+    padding: 2px;
+    line-height: 1;
+    transition: opacity 0.15s ease;
+}
+
+.cx-toast__close:hover {
+    opacity: 1;
+}
+
+@keyframes cx-toast-in {
+    from {
+        opacity: 0;
+        transform: translateX(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .cx-toast-stack {
+        top: auto;
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+        max-width: none;
+    }
+}

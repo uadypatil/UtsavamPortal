@@ -12,7 +12,7 @@ const NAV_ITEMS = [
     { to: 'reports', label: 'Revenue Report', icon: 'bi-graph-up-arrow' },
 ];
 
-function AdminSidebar() {
+function SuperAdminSidebar() {
     const location = useLocation();
     const isActive = (to) => location.pathname.includes(to);
 
@@ -92,4 +92,4 @@ function AdminSidebar() {
     );
 }
 
-export default AdminSidebar;
+export default SuperAdminSidebar;

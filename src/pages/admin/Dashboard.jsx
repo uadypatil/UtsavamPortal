@@ -48,7 +48,7 @@ function Dashboard() {
     }, []);
 
     return (
-        <div className="wrap-content h-100 w-100 border-3 border-secondary shadow rounded-5 p-3 p-md-4">
+        <div className="wrap-content h-auto w-100 border-3 border-secondary shadow rounded-5 p-3 p-md-4">
             <div className="ep-festive-banner mb-4" data-aos="fade-up">
                 <h4 className="fw-bold mb-1 position-relative">🪔 Ganpati Festival Dashboard</h4>
                 <p className="mb-0 opacity-90 position-relative">A quick look at today's events, receipts, and collections.</p>

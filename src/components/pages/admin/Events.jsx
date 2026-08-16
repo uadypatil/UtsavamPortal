@@ -137,29 +137,82 @@ function Events() {
             setPaymentQRPreview(URL.createObjectURL(file));
         }
     };
-    return (
-        <div className="wrap-content h-100 w-100 border-3 border-secondary shadow rounded-5 p-3">
-            <div className="row">
-                <div className="col-12">
-                    <h4 className="fw-semibold">Dashboard</h4>
+return (
+    <div className="wrap-content h-auto w-100 border-3 border-secondary shadow rounded-5 p-3 p-md-4">
+
+        {/* Page Header */}
+        <div className="ep-festive-banner mb-4" data-aos="fade-up">
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <h4 className="fw-bold mb-1 position-relative">
+                        🪔 Event Management
+                    </h4>
+                    <p className="mb-0 opacity-90 position-relative">
+                        Create and manage your Ganpati festival event details.
+                    </p>
                 </div>
-            </div>
 
-            <div className="col-12 my-3">
-                <button className='btn btn-success' onClick={handleSave}>Save</button>
+                <button
+                    type="button"
+                    className="btn ep-action-btn ep-action-btn--indigo px-4"
+                    onClick={handleSave}
+                >
+                    <i className="bi bi-check2-circle me-2"></i>
+                    Save Event
+                </button>
             </div>
+        </div>
 
-            <div className="row event-form-flex mt-5">
-                <div className="col-lg-8 col-md-8 col-sm-12 border-1 shadow rounded-4 pb-5" style={{ height: '75dvh', overflowY: 'scroll' }}>
-                    <div className="my-3">
+        {/* Main Event Area */}
+        <div className="row g-4">
+
+            {/* Event Form */}
+            <div
+                className="col-lg-8 col-md-7 col-sm-12"
+                data-aos="fade-up"
+            >
+                <div className="ep-chart-card h-100">
+
+                    {/* Section Header */}
+                    <div className="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h6 className="fw-bold mb-1">
+                                <i className="bi bi-calendar-event me-2"></i>
+                                Event Details
+                            </h6>
+
+                            <span className="text-muted small">
+                                Configure your festival event information.
+                            </span>
+                        </div>
+
+                        <span className="ep-badge ep-badge--indigo">
+                            <i className="bi bi-pencil-square me-1"></i>
+                            Event
+                        </span>
+                    </div>
+
+                    {/* Event Name */}
+                    <div className="mb-4">
+                        <label className="form-label fw-semibold">
+                            Festival / Event Name
+                        </label>
+
                         <input
                             type="text"
-                            className="form-control fw-semibold fs-4"
-                            placeholder="Festival/ event name"
+                            className="form-control form-control-lg"
+                            placeholder="Enter festival or event name"
                             value={eventName}
                             onChange={(e) => setEventName(e.target.value)}
                         />
+                    </div>
 
+                    {/* Duration */}
+                    <div className="mb-4">
+                        <label className="form-label fw-semibold">
+                            <i className="bi bi-clock me-1"></i>
+                            Event Duration
+                        </label>
 
                         <DurationSelector
                             value={durationData.duration}
@@ -167,123 +220,287 @@ function Events() {
                             toTime={durationData.toTime}
                             onChange={setDurationData}
                         />
+                    </div>
 
-                        <div className='mt-3'>
-                            <label className='form-label'>From date</label>
+                    {/* Dates */}
+                    <div className="row g-3">
+
+                        <div className="col-md-6">
+                            <label className="form-label fw-semibold">
+                                From Date
+                            </label>
+
                             <input
                                 type="date"
-                                className='form-control'
+                                className="form-control"
                                 value={fromDate}
                                 onChange={(e) => setFromDate(e.target.value)}
                             />
                         </div>
 
-                        <div className='mt-3'>
-                            <label className='form-label'>To date</label>
+                        <div className="col-md-6">
+                            <label className="form-label fw-semibold">
+                                To Date
+                            </label>
+
                             <input
                                 type="date"
-                                className='form-control'
+                                className="form-control"
                                 value={toDate}
                                 onChange={(e) => setToDate(e.target.value)}
                             />
                         </div>
 
-                        <div className='mt-3 w-100 text-end'>
-                            <button
-                                className='btn border-primary text-primary'
-                                onClick={() => setShowMoreDetails(!showMoreDetails)}
-                            >
-                                {showMoreDetails ? "Hide Details" : "More Details"}
-                            </button>
-                        </div>
                     </div>
 
+                    {/* More Details */}
+                    <div className="d-flex justify-content-end mt-4">
+                        <button
+                            type="button"
+                            className="btn ep-outline-btn"
+                            onClick={() => setShowMoreDetails(!showMoreDetails)}
+                        >
+                            <i
+                                className={`bi ${
+                                    showMoreDetails
+                                        ? 'bi-chevron-up'
+                                        : 'bi-chevron-down'
+                                } me-2`}
+                            ></i>
+
+                            {showMoreDetails
+                                ? 'Hide Additional Details'
+                                : 'Show Additional Details'}
+                        </button>
+                    </div>
+
+                    {/* Additional Details */}
                     {showMoreDetails && (
-                        <div className="mt-3">
-                            <input
-                                type="text"
-                                className="form-control mb-2"
-                                placeholder="Event Sub Title"
-                                value={eventSubTitle}
-                                onChange={(e) => setEventSubTitle(e.target.value)}
-                            />
-                            <textarea
-                                className="form-control mb-2"
-                                placeholder="Event Description"
-                                value={eventDescription}
-                                onChange={(e) => setEventDescription(e.target.value)}
-                            />
-                            <input
-                                type="text"
-                                className="form-control mb-2"
-                                placeholder="Destination"
-                                value={destination}
-                                onChange={(e) => setDestination(e.target.value)}
-                            />
-                            <input
-                                type="text"
-                                className="form-control mb-2"
-                                placeholder="Contact Number 1"
-                                value={contact1}
-                                onChange={(e) => setContact1(e.target.value)}
-                            />
-                            <input
-                                type="text"
-                                className="form-control mb-2"
-                                placeholder="Contact Number 2"
-                                value={contact2}
-                                onChange={(e) => setContact2(e.target.value)}
-                            />
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Map Link"
-                                value={mapLink}
-                                onChange={(e) => setMapLink(e.target.value)}
-                            />
-                            {/* Payment QR Code Upload */}
-                            <div className='mt-3'>
-                                <label className='form-label'>Payment QR Code</label>
+                        <div className="ep-details-section mt-4 pt-4">
+
+                            <div className="mb-3">
+                                <label className="form-label fw-semibold">
+                                    Event Subtitle
+                                </label>
+
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Enter event subtitle"
+                                    value={eventSubTitle}
+                                    onChange={(e) =>
+                                        setEventSubTitle(e.target.value)
+                                    }
+                                />
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label fw-semibold">
+                                    Event Description
+                                </label>
+
+                                <textarea
+                                    className="form-control"
+                                    rows="4"
+                                    placeholder="Describe your festival event"
+                                    value={eventDescription}
+                                    onChange={(e) =>
+                                        setEventDescription(e.target.value)
+                                    }
+                                />
+                            </div>
+
+                            <div className="row g-3">
+
+                                <div className="col-md-6">
+                                    <label className="form-label fw-semibold">
+                                        Destination
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Event destination"
+                                        value={destination}
+                                        onChange={(e) =>
+                                            setDestination(e.target.value)
+                                        }
+                                    />
+                                </div>
+
+                                <div className="col-md-6">
+                                    <label className="form-label fw-semibold">
+                                        Map Link
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Google Maps link"
+                                        value={mapLink}
+                                        onChange={(e) =>
+                                            setMapLink(e.target.value)
+                                        }
+                                    />
+                                </div>
+
+                                <div className="col-md-6">
+                                    <label className="form-label fw-semibold">
+                                        Contact Number 1
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Primary contact number"
+                                        value={contact1}
+                                        onChange={(e) =>
+                                            setContact1(e.target.value)
+                                        }
+                                    />
+                                </div>
+
+                                <div className="col-md-6">
+                                    <label className="form-label fw-semibold">
+                                        Contact Number 2
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Secondary contact number"
+                                        value={contact2}
+                                        onChange={(e) =>
+                                            setContact2(e.target.value)
+                                        }
+                                    />
+                                </div>
+
+                            </div>
+
+                            {/* Payment QR */}
+                            <div className="mt-4">
+                                <label className="form-label fw-semibold">
+                                    <i className="bi bi-qr-code me-1"></i>
+                                    Payment QR Code
+                                </label>
+
                                 <input
                                     type="file"
-                                    className='form-control'
+                                    className="form-control"
                                     accept="image/*"
                                     onChange={handleQRChange}
                                 />
+
                                 {paymentQRPreview && (
-                                    <div className='mt-2'>
-                                        <img src={paymentQRPreview} alt="QR Preview" style={{ width: '150px', borderRadius: '10px' }} />
+                                    <div className="mt-3">
+                                        <div className="small text-muted mb-2">
+                                            QR Preview
+                                        </div>
+
+                                        <div className="ep-qr-preview">
+                                            <img
+                                                src={paymentQRPreview}
+                                                alt="QR Preview"
+                                            />
+                                        </div>
                                     </div>
                                 )}
                             </div>
+
                         </div>
                     )}
-                    <div className="no-bg-important my-3">
 
-                        <div className="d-flex gap-3 flex-direction-adjust mt-3">
-                            <div className="card shadow flex-fill-1 p-4">
-                                <h4>Event Managers</h4>
-                                <h1 className='text-success'>0</h1>
-                            </div>
-                            <div className="card shadow flex-fill-1 p-4">
-                                <h4>Receipts</h4>
-                                <h1 className='text-success'>0</h1>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div className="col-lg-4 col-md-4 col-sm-12 p-2 border-1 shadow rounded-4">
-                    <div className="image-events-fluid w-100">
-                        <StyledQRCode qrData={qrDataUrl} />
-                    </div>
-                    <p className='text-center'>Event Manager Registration</p>
                 </div>
             </div>
-        </div >
-    );
+
+            {/* QR / Registration Card */}
+            <div
+                className="col-lg-4 col-md-5 col-sm-12"
+                data-aos="fade-up"
+            >
+                <div className="ep-chart-card h-100 d-flex flex-column">
+
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 className="fw-bold mb-1">
+                                Event Manager Registration
+                            </h6>
+
+                            <span className="text-muted small">
+                                Scan this QR code to register.
+                            </span>
+                        </div>
+
+                        <span className="ep-badge ep-badge--teal">
+                            <i className="bi bi-qr-code"></i>
+                        </span>
+                    </div>
+
+                    <div className="ep-qr-container flex-grow-1 d-flex align-items-center justify-content-center">
+                        <StyledQRCode qrData={qrDataUrl} />
+                    </div>
+
+                    <div className="text-center mt-3">
+                        <span className="text-muted small">
+                            Event Manager Registration QR
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        {/* Event Statistics */}
+        <div className="row g-4 mt-1">
+
+            <div
+                className="col-md-6 col-sm-12"
+                data-aos="fade-up"
+            >
+                <div className="ep-stat-mini ep-stat-mini--teal">
+                    <div className="ep-stat-mini__icon">
+                        <i className="bi bi-people-fill"></i>
+                    </div>
+
+                    <div>
+                        <span className="text-muted small d-block">
+                            Event Managers
+                        </span>
+
+                        <h3 className="fw-bold mb-0">
+                            0
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                className="col-md-6 col-sm-12"
+                data-aos="fade-up"
+            >
+                <div className="ep-stat-mini ep-stat-mini--indigo">
+                    <div className="ep-stat-mini__icon">
+                        <i className="bi bi-receipt"></i>
+                    </div>
+
+                    <div>
+                        <span className="text-muted small d-block">
+                            Receipts
+                        </span>
+
+                        <h3 className="fw-bold mb-0">
+                            0
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+);
 }
 
 export default Events;

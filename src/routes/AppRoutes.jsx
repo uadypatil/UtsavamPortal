@@ -23,6 +23,9 @@ import EventManagerProfile from "../components/pages/event_manager/EventManagerP
 import NewEventManager from "../components/pages/event_manager/NewEventManager";
 import DonerAnimatedReceipt from "../components/pages/website/DonarAnimatedReceipt";
 import NotFound from "../pages/errors/404";
+import CollectionExecutive from "../components/pages/admin/CollectionExecutive";
+import AddDonationExecutive from "../components/pages/admin/AddDonationExecutive";
+import UpdateDonationExecutive from "../components/pages/admin/UpdateDonationExecutive";
 // import PrivateRoute from "../components/PrivateRoute";
 
 const AppRoutes = () => {
@@ -55,7 +58,10 @@ const AppRoutes = () => {
         >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="reports" element={<Report />} />
-          <Route path="events/managers" element={<EventManagers />} />
+          <Route path="donationcollector" element={<CollectionExecutive />} />
+          <Route path="addDCollector/:donationExecutiveId" element={<UpdateDonationExecutive />} />
+          <Route path="addDCollector" element={<AddDonationExecutive />} />
+          <Route path="expencemanager" element={<EventManagers />} />
           <Route path="events/all" element={<Events />} />
           <Route path="event/:eventid/new" element={<NewEventManager />} />
         </Route>

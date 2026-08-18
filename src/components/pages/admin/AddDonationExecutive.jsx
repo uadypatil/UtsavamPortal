@@ -4,12 +4,15 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import '../../../App.css';
-import { save } from '../../../services/api';
+import { collectionExecutivesApi } from '../../../services/endpoints/collectionExecutives';
+import { apiErrorMessage } from '../../../services/httpClient';
+import { useToast } from '../../../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 import { INITIAL_FORM, validateCollector, CollectorForm } from './collectorExecutiveForm';
 
 function AddDonationExecutive() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
@@ -31,7 +34,7 @@ function AddDonationExecutive() {
 
     try {
       setSaving(true);
-      await save('CollectionExecutive/save', {
+      await collectionExecutivesApi.create({
         seasonId: localStorage.getItem('seasonId'),
         eventId: localStorage.getItem('eventId'),
         eventOrganizerId: localStorage.getItem('eventOrganizerId'),
@@ -44,11 +47,10 @@ function AddDonationExecutive() {
         age: form.age === '' ? null : Number(form.age),
         isActive: form.isActive,
       });
-      alert('Donation collector created successfully.');
-      navigate('/donation-collectors');
+      toast.success('Donation collector created successfully.');
+      navigate('/admin/donationcollector');
     } catch (error) {
-      console.error(error);
-      alert(error?.message || 'Unable to create donation collector.');
+      toast.error(apiErrorMessage(error, 'Unable to create donation collector.'));
     } finally {
       setSaving(false);
     }
@@ -62,12 +64,12 @@ function AddDonationExecutive() {
             <h4 className="fw-bold mb-1">🪔 Add Donation Collector</h4>
             <p className="mb-0 opacity-90">Create a new collection executive account.</p>
           </div>
-          <button className="btn ep-modal-secondary" onClick={() => navigate('/donation-collectors')}>
+          <button className="btn ep-modal-secondary" onClick={() => navigate('/admin/donationcollector')}>
             <i className="bi bi-arrow-left me-2" /> Back
           </button>
         </div>
       </div>
-      <CollectorForm form={form} errors={errors} editing={false} saving={saving} onChange={update} onSubmit={submit} onCancel={() => navigate('/donation-collectors')} />
+      <CollectorForm form={form} errors={errors} editing={false} saving={saving} onChange={update} onSubmit={submit} onCancel={() => navigate('/admin/donationcollector')} />
     </div>
   );
 }

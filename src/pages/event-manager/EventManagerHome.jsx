@@ -11,52 +11,79 @@ import QuickAction from '../../components/ui/QuickAction';
 import Badge from '../../components/ui/Badge';
 import { SkeletonTable } from '../../components/ui/Skeleton';
 import EmptyState from '../../components/ui/EmptyState';
+import { donationsApi } from '../../services/endpoints/donations';
+import { apiErrorMessage } from '../../services/httpClient';
 
-const WEEKLY_DONATIONS = [
-    { label: 'Mon', value: 6 },
-    { label: 'Tue', value: 9 },
-    { label: 'Wed', value: 4 },
-    { label: 'Thu', value: 12 },
-    { label: 'Fri', value: 10 },
-    { label: 'Sat', value: 17 },
-    { label: 'Sun', value: 14 },
-];
+const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MODE_TONE = { upi: 'indigo', cash: 'success', card: 'info' };
 
+/**
+ * Previously fully static (fake registration count, a hardcoded 5-row
+ * "recent" table, a fabricated weekly bar chart). Now built from the real
+ * GET /donations list for this event:
+ *  - "Today's Registrations" and the weekly chart are DERIVED from that
+ *    real list (grouped client-side), same approach as the Super Admin
+ *    dashboard — never a separate fabricated number.
+ *  - "Recently Added" shows the actual latest donations, most recent first.
+ */
 function EventManagerHome() {
+    const eventId = localStorage.getItem('eventId');
     const [loading, setLoading] = useState(true);
-    const [registrationsToday, setRegistrationsToday] = useState(0);
-    const [recent, setRecent] = useState([]);
+    const [loadError, setLoadError] = useState('');
+    const [donations, setDonations] = useState([]);
     const [search, setSearch] = useState('');
 
     useEffect(() => {
         AOS.init({ duration: 1000, once: true });
 
-        // Static data for now; replace with a real API call (src/services/api.js)
-        // once the backend endpoint for recent donations is available.
-        const timer = setTimeout(() => {
-            setRegistrationsToday(17);
-            setRecent([
-                { regNo: 142, name: 'Anishq Shubhashish', amount: 500, mode: 'UPI' },
-                { regNo: 143, name: 'Rahul Patil', amount: 1100, mode: 'Cash' },
-                { regNo: 144, name: 'Sonal Nikam', amount: 250, mode: 'UPI' },
-                { regNo: 145, name: 'Ganesh Deshmukh', amount: 2100, mode: 'Card' },
-                { regNo: 146, name: 'Priya Kulkarni', amount: 750, mode: 'UPI' },
-            ]);
-            setLoading(false);
-        }, 500);
-
-        return () => clearTimeout(timer);
+        (async () => {
+            setLoading(true);
+            setLoadError('');
+            try {
+                const data = await donationsApi.list(eventId ? { eventId } : undefined);
+                const list = Array.isArray(data) ? data : data?.items || data?.results || [];
+                list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                setDonations(list);
+            } catch (error) {
+                setLoadError(apiErrorMessage(error, 'Unable to load recent donations.'));
+            } finally {
+                setLoading(false);
+            }
+        })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const registrationsToday = useMemo(() => {
+        const todayKey = new Date().toDateString();
+        return donations.filter((d) => d.createdAt && new Date(d.createdAt).toDateString() === todayKey).length;
+    }, [donations]);
+
+    const weeklyData = useMemo(() => {
+        const counts = Array(7).fill(0);
+        const now = new Date();
+        const sevenDaysAgo = new Date(now); sevenDaysAgo.setDate(now.getDate() - 6);
+        donations.forEach((d) => {
+            if (!d.createdAt) return;
+            const dt = new Date(d.createdAt);
+            if (dt >= sevenDaysAgo && dt <= now) counts[dt.getDay()] += 1;
+        });
+        // Order starting from 6 days ago through today, left to right.
+        const ordered = [];
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date(now); d.setDate(now.getDate() - i);
+            ordered.push({ label: DAY_LABELS[d.getDay()], value: counts[d.getDay()] });
+        }
+        return ordered;
+    }, [donations]);
+
+    const recent = donations.slice(0, 20);
     const filtered = useMemo(() => {
         if (!search.trim()) return recent;
         const q = search.trim().toLowerCase();
         return recent.filter(
-            (r) => r.name.toLowerCase().includes(q) || String(r.regNo).includes(q)
+            (r) => (r.donorName || '').toLowerCase().includes(q) || String(r.receiptNumber || '').includes(q)
         );
     }, [recent, search]);
-
-    const modeTone = { UPI: 'indigo', Cash: 'success', Card: 'info' };
 
     return (
         <div className="wrap-content h-100 w-100 border-3 border-secondary shadow rounded-5 p-3 p-md-4">
@@ -64,6 +91,12 @@ function EventManagerHome() {
                 <h4 className="fw-bold mb-1 position-relative">🪔 Welcome back</h4>
                 <p className="mb-0 opacity-90 position-relative">Here's what's happening with today's collections.</p>
             </div>
+
+            {loadError && (
+                <div className="alert alert-danger d-flex justify-content-between align-items-center">
+                    <span><i className="bi bi-exclamation-triangle me-2" />{loadError}</span>
+                </div>
+            )}
 
             <div className="row">
                 <div className="col-lg-4 col-md-6 mb-4" data-aos="fade-up">
@@ -75,7 +108,6 @@ function EventManagerHome() {
                             value={registrationsToday}
                             icon="bi-person-check-fill"
                             tone="amber"
-                            trend={{ direction: 'up', label: '+5 since noon' }}
                         />
                     )}
                     <div className="mt-3">
@@ -86,7 +118,7 @@ function EventManagerHome() {
                 <div className="col-lg-8 col-md-6 mb-4" data-aos="fade-up">
                     <div className="ep-chart-card h-100">
                         <h6 className="fw-bold mb-3">This Week's Donations</h6>
-                        <BarChart data={WEEKLY_DONATIONS} formatValue={(v) => `${v} receipts`} />
+                        <BarChart data={weeklyData} formatValue={(v) => `${v} receipts`} />
                     </div>
                 </div>
             </div>
@@ -98,7 +130,7 @@ function EventManagerHome() {
                         <i className="bi bi-search"></i>
                         <input
                             type="text"
-                            placeholder="Search by name or reg. no..."
+                            placeholder="Search by name or receipt number..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
@@ -122,7 +154,7 @@ function EventManagerHome() {
                         <table className="ep-table">
                             <thead>
                                 <tr>
-                                    <th>Reg. No</th>
+                                    <th>Receipt No</th>
                                     <th>Name</th>
                                     <th>Amount</th>
                                     <th>Mode</th>
@@ -131,13 +163,13 @@ function EventManagerHome() {
                             </thead>
                             <tbody>
                                 {filtered.map((row) => (
-                                    <tr key={row.regNo}>
-                                        <td className="text-muted">#{row.regNo}</td>
-                                        <td className="fw-medium">{row.name}</td>
-                                        <td>₹{row.amount.toLocaleString('en-IN')}</td>
-                                        <td><Badge tone={modeTone[row.mode] || 'neutral'}>{row.mode}</Badge></td>
+                                    <tr key={row.id}>
+                                        <td className="text-muted">#{row.receiptNumber}</td>
+                                        <td className="fw-medium">{row.donorName || '—'}</td>
+                                        <td>₹{Number(row.amount || 0).toLocaleString('en-IN')}</td>
+                                        <td><Badge tone={MODE_TONE[row.paymentMode] || 'neutral'}>{row.paymentMode || '—'}</Badge></td>
                                         <td>
-                                            <Link to="/em/doner/profile" className="btn btn-sm border-primary text-primary">
+                                            <Link to={`/doner/${row.receiptNumber}/receipt`} target="_blank" className="btn btn-sm border-primary text-primary">
                                                 View
                                             </Link>
                                         </td>

@@ -4,14 +4,20 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import '../../../App.css';
-import { load, save } from '../../../services/api';
+// Migrated off the legacy CollectionExecutive/getBy/event_id and
+// CollectionExecutive/save calls (non-REST backend) onto the documented
+// REST contract (see services/endpoints/collectionExecutives.js). All
+// existing behavior (search, filter, pagination, view/edit/toggle/delete)
+// is preserved — only the data-access layer changed.
+import { collectionExecutivesApi } from '../../../services/endpoints/collectionExecutives';
+import { apiErrorMessage } from '../../../services/httpClient';
+import { useToast } from '../../../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 
-const API = {
-  LIST: 'CollectionExecutive/getBy/event_id',
-  DELETE: 'CollectionExecutive/delete',
-  TOGGLE: 'CollectionExecutive/toggleStatus',
-};
+// Same ACTIVE/INACTIVE convention used by the Super Admin entity screens
+// (see pages/superadmin/*.jsx) — kept in one place per resource type would
+// be nicer, but this mirrors the existing file's local-constant style.
+const STATUS_VALUES = { active: 'ACTIVE', inactive: 'INACTIVE' };
 
 const PAGE_SIZE = 8;
 
@@ -37,6 +43,7 @@ const normalize = (item) => ({
 
 function CollectionExecutive() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [collectors, setCollectors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
@@ -49,12 +56,12 @@ function CollectionExecutive() {
   const loadCollectors = async () => {
     try {
       setLoading(true);
-      const response = await load(`${API.LIST}/${localStorage.getItem('eventId') || ''}`);
-      const data = Array.isArray(response) ? response : response?.data || response?.results || [];
+      const eventId = localStorage.getItem('eventId') || undefined;
+      const response = await collectionExecutivesApi.list(eventId ? { eventId } : undefined);
+      const data = Array.isArray(response) ? response : response?.items || response?.results || [];
       setCollectors(data.map(normalize));
     } catch (error) {
-      console.error(error);
-      alert(error?.message || 'Unable to load donation collectors.');
+      toast.error(apiErrorMessage(error, 'Unable to load donation collectors.'));
     } finally {
       setLoading(false);
     }
@@ -95,11 +102,12 @@ function CollectionExecutive() {
 
     try {
       setActionLoading(collector.id);
-      await save(API.DELETE, { id: collector.id, collectionExecutiveId: collector.id });
+      await collectionExecutivesApi.remove(collector.id);
+      toast.success('Collector deleted.');
       setConfirm(null);
       await loadCollectors();
     } catch (error) {
-      alert(error?.message || 'Unable to delete donation collector.');
+      toast.error(apiErrorMessage(error, 'Unable to delete donation collector.'));
     } finally {
       setActionLoading(null);
     }
@@ -111,15 +119,15 @@ function CollectionExecutive() {
 
     try {
       setActionLoading(collector.id);
-      await save(API.TOGGLE, {
-        id: collector.id,
-        collectionExecutiveId: collector.id,
-        isActive: !collector.isActive,
-      });
+      await collectionExecutivesApi.setStatus(
+        collector.id,
+        collector.isActive ? STATUS_VALUES.inactive : STATUS_VALUES.active
+      );
+      toast.success('Collector status updated.');
       setConfirm(null);
       await loadCollectors();
     } catch (error) {
-      alert(error?.message || 'Unable to update collector status.');
+      toast.error(apiErrorMessage(error, 'Unable to update collector status.'));
     } finally {
       setActionLoading(null);
     }
@@ -263,7 +271,11 @@ function CollectionExecutive() {
                           <button className="btn ep-icon-btn ep-icon-btn--view" title="View" onClick={() => setViewCollector(collector)}>
                             <i className="bi bi-eye" />
                           </button>
-                          <button className="btn ep-icon-btn ep-icon-btn--edit" title="Edit" onClick={() => navigate(`/donation-collectors/edit/${collector.id}`)}>
+                          {/* Fixed route mismatch: this used to point to
+                              /donation-collectors/edit/:id, which was never
+                              a registered route (see AppRoutes.jsx) — the
+                              actual edit screen lives under /admin/addDCollector/:id */}
+                          <button className="btn ep-icon-btn ep-icon-btn--edit" title="Edit" onClick={() => navigate(`/admin/addDCollector/${collector.id}`)}>
                             <i className="bi bi-pencil" />
                           </button>
                           <button

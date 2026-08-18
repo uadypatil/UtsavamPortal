@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import '../../App.css';
-import api_url from '../../config/apiConfig';
 import { useAuth } from '../../hooks/useAuth';
+import { apiErrorMessage } from '../../services/httpClient';
 import { useToast } from '../../context/ToastContext';
 import logo from '../../assets/UtsavamLogoMain.png';
 import ganesha from '../../assets/animatedganesha.png';
 
 function SignIn() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { login } = useAuth();
     const toast = useToast();
 
@@ -48,23 +48,29 @@ function SignIn() {
 
         setSubmitting(true);
         try {
-            const response = await axios.post(api_url + 'Main/authenticateUser', formData);
-            const role = response?.data?.response?.role;
-
-            login({ role, username: formData.username });
+            // Real backend auth (POST /auth/login) — see hooks/useAuth.js and
+            // services/endpoints/auth.js. Replaces the legacy
+            // Main/authenticateUser call, which didn't issue real tokens.
+            const account = await login(formData);
             toast.success('Login successful!');
 
-            if (role === 'event_manager') {
+            const redirectTo = location.state?.from?.pathname;
+            if (redirectTo) {
+                navigate(redirectTo, { replace: true });
+            } else if (account.role === 'event_manager') {
                 navigate('/em/dashboard');
-            } else if (role === 'organizer') {
+            } else if (account.role === 'organizer') {
                 navigate('/admin/dashboard');
+            } else if (account.role === 'super_admin') {
+                navigate('/superadmin/dashboard');
             } else {
                 // Unknown role from API — surface it instead of silently going nowhere.
                 toast.info('Logged in, but no dashboard is mapped for this role yet.');
             }
         } catch (error) {
-            console.error('API error:', error);
-            toast.error('Login failed. Please check your credentials.');
+            // Never log credentials or raw error payloads that might carry
+            // sensitive data to the console — only a safe display message.
+            toast.error(apiErrorMessage(error, 'Login failed. Please check your credentials.'));
         } finally {
             setSubmitting(false);
         }

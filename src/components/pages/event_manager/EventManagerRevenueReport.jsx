@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -7,54 +7,75 @@ import 'aos/dist/aos.css';
 import '../../../App.css';
 import * as XLSX from 'xlsx';
 import EmptyState from '../../ui/EmptyState';
+import { donationsApi } from '../../../services/endpoints/donations';
+import { apiErrorMessage } from '../../../services/httpClient';
 
 function EventManagerRevenueReport() {
+    const eventId = localStorage.getItem('eventId');
+
+    const [donations, setDonations] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState('');
+
     const [showFilters, setShowFilters] = useState(false);
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
     const [name, setName] = useState('');
-    const [filteredData, setFilteredData] = useState([]);
     const tableRef = useRef(null);
 
-    const dummyData = [
-        { id: '101', name: 'Anishq Shubhashish', amount: '1001/-', datetime: '2025-08-10T10:11:00' },
-        { id: '102', name: 'Riya Kulkarni', amount: '750/-', datetime: '2025-08-11T11:25:00' },
-        { id: '103', name: 'Ramesh Jadhav', amount: '550/-', datetime: '2025-08-12T12:14:00' },
-        { id: '104', name: 'Anishq Shubhashish', amount: '2000/-', datetime: '2025-08-13T09:30:00' }
-    ];
+    const load = async () => {
+        setLoading(true);
+        setLoadError('');
+        try {
+            const data = await donationsApi.list(eventId ? { eventId } : undefined);
+            const list = Array.isArray(data) ? data : data?.items || data?.results || [];
+            setDonations(list);
+        } catch (error) {
+            setLoadError(apiErrorMessage(error, 'Unable to load your donation records.'));
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         AOS.init({ duration: 1000, once: true });
-        setFilteredData(dummyData); // Load all by default
+        load();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const toggleFilters = () => setShowFilters(prev => !prev);
 
+    const filteredData = useMemo(() => {
+        return donations.filter(item => {
+            const itemDate = item.createdAt ? new Date(item.createdAt).toISOString().split('T')[0] : '';
+            const fromMatch = fromDate ? itemDate >= fromDate : true;
+            const toMatch = toDate ? itemDate <= toDate : true;
+            const nameMatch = name ? (item.donorName || '').toLowerCase().includes(name.toLowerCase()) : true;
+            return fromMatch && toMatch && nameMatch;
+        });
+    }, [donations, fromDate, toDate, name]);
+
+    // Safer than overwriting document.body.innerHTML (the previous
+    // implementation did that and force-reloaded the page afterwards) —
+    // opens a separate print window instead, matching the pattern already
+    // used elsewhere in the admin module.
     const handlePrint = () => {
         const printContents = tableRef.current.innerHTML;
-        const originalContents = document.body.innerHTML;
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
-        window.location.reload(); // restore page after print
+        const printWindow = window.open('', '', 'height=700,width=900');
+        printWindow.document.write('<html><head><title>Revenue Report</title>');
+        printWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">');
+        printWindow.document.write('</head><body>');
+        printWindow.document.write(printContents);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
     };
 
     const handleExportToExcel = () => {
         const table = tableRef.current.querySelector('table');
         const wb = XLSX.utils.table_to_book(table);
         XLSX.writeFile(wb, 'RevenueReport.xlsx');
-    };
-
-    const handleFilter = () => {
-        const filtered = dummyData.filter(item => {
-            const itemDate = new Date(item.datetime).toISOString().split('T')[0];
-            const fromMatch = fromDate ? itemDate >= fromDate : true;
-            const toMatch = toDate ? itemDate <= toDate : true;
-            const nameMatch = name ? item.name.toLowerCase().includes(name.toLowerCase()) : true;
-            return fromMatch && toMatch && nameMatch;
-        });
-
-        setFilteredData(filtered);
     };
 
     return (
@@ -88,7 +109,7 @@ function EventManagerRevenueReport() {
                             <input type="text" className="form-control" value={name} onChange={e => setName(e.target.value)} placeholder="Search by donor name" />
                         </div>
                         <div className="col-md-2 col-sm-4">
-                            <button className="btn btn-primary w-100" onClick={handleFilter}>Apply</button>
+                            <button className="btn btn-primary w-100" onClick={() => { /* filtering is already live via useMemo above */ }}>Apply</button>
                         </div>
                     </div>
                 </div>
@@ -109,14 +130,21 @@ function EventManagerRevenueReport() {
                     </div>
                 </div>
 
-                {filteredData.length === 0 ? (
+                {loading ? (
+                    <div className="text-center text-muted py-5"><span className="spinner-border spinner-border-sm me-2" />Loading donations...</div>
+                ) : loadError ? (
+                    <div className="alert alert-danger d-flex justify-content-between align-items-center m-3">
+                        <span><i className="bi bi-exclamation-triangle me-2" />{loadError}</span>
+                        <button className="btn btn-sm btn-outline-danger" onClick={load}>Retry</button>
+                    </div>
+                ) : filteredData.length === 0 ? (
                     <EmptyState icon="bi-search" title="No records found" subtitle="Try adjusting your filters." />
                 ) : (
                     <div className="ep-datatable-scroll" style={{ maxHeight: '60dvh' }} ref={tableRef}>
                         <table className="ep-table">
                             <thead>
                                 <tr>
-                                    <th>Reg. No</th>
+                                    <th>Receipt No</th>
                                     <th>Name</th>
                                     <th>Amount</th>
                                     <th>Date Time</th>
@@ -124,14 +152,14 @@ function EventManagerRevenueReport() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredData.map((item, idx) => (
-                                    <tr key={idx}>
-                                        <td className="text-muted">#{item.id}</td>
-                                        <td className="fw-medium">{item.name}</td>
+                                {filteredData.map((item) => (
+                                    <tr key={item.id}>
+                                        <td className="text-muted">#{item.receiptNumber}</td>
+                                        <td className="fw-medium">{item.donorName || '—'}</td>
                                         <td>₹{item.amount}</td>
-                                        <td className="text-muted">{new Date(item.datetime).toLocaleString()}</td>
+                                        <td className="text-muted">{item.createdAt ? new Date(item.createdAt).toLocaleString() : '—'}</td>
                                         <td>
-                                            <Link to="/em/doner/profile" className="btn border-primary text-primary btn-sm">
+                                            <Link to={`/doner/${item.receiptNumber}/receipt`} target="_blank" className="btn border-primary text-primary btn-sm">
                                                 View
                                             </Link>
                                         </td>

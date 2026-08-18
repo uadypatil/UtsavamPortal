@@ -6,10 +6,12 @@ import { Link, useLocation } from "react-router-dom";
 
 const NAV_ITEMS = [
     { to: 'dashboard', label: 'Dashboard', icon: 'bi-speedometer2' },
-    { to: 'events/all', label: 'Event', icon: 'bi-calendar-event' },
-    { to: 'donationcollector', label: 'Donation Collector', icon: 'bi-people-fill' },
-    { to: 'expencemanager', label: 'Expences Manager', icon: 'bi-people-fill' },
-    { to: 'reports', label: 'Revenue Report', icon: 'bi-graph-up-arrow' },
+    { to: 'events/all', label: 'Events', icon: 'bi-calendar-event' },
+    { to: 'donationcollector', label: 'Donation Collectors', icon: 'bi-people-fill' },
+    { to: 'donors', label: 'Donors', icon: 'bi-person-hearts' },
+    { to: 'donations', label: 'Donations & Reports', icon: 'bi-cash-coin' },
+    { to: 'expenses', label: 'Expenses', icon: 'bi-receipt-cutoff' },
+    { to: 'receipt-template', label: 'Receipt Template', icon: 'bi-file-earmark-ruled' },
 ];
 
 function AdminSidebar() {

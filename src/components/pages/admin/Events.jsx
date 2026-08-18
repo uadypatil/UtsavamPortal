@@ -5,17 +5,37 @@ import 'aos/dist/aos.css';
 import '../../../App.css';
 import DurationSelector from '../../utils/DurationSelector';
 import StyledQRCode from '../../utils/StyledQRCode';
-import { load, save } from '../../../services/api';
+import { eventsApi } from '../../../services/endpoints/events';
+import { apiErrorMessage } from '../../../services/httpClient';
+import { useToast } from '../../../context/ToastContext';
 import { base_url } from '../../../config/appConfig';
 import { encryptData } from "../../utils/Encryption";
-// import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
+/**
+ * Event create/edit form. Previously this always operated on a single
+ * hardcoded event (`const id = 3`) and a hardcoded `organizerId = 14` —
+ * meaning the organizer could never manage more than one festival/year.
+ * Now:
+ *  - `eventId` comes from the route (/admin/events/:eventId/edit); absent
+ *    means "create new event" (see routes/AppRoutes.jsx).
+ *  - `eventOrganizerId` comes from the authenticated organizer's stored
+ *    profile rather than a literal constant. If that value isn't present
+ *    yet (e.g. the login response doesn't carry it), this intentionally
+ *    does NOT fall back to a hardcoded id — it blocks save with a clear
+ *    error instead of silently attaching the wrong organizer's event.
+ * The list/browse experience (multiple events) now lives in EventsList.jsx,
+ * reached from the sidebar's "Event" item.
+ */
 function Events() {
-    // TODO: replace with the real event id (from route params or the logged-in
-    // organizer's context) once that wiring is in place. Previously this line
-    // read `const { id } = 3`, which always evaluated to `id = undefined`, so
-    // `event_id` was silently missing from every save payload.
-    const id = 3; // event id from route if available
+    const { eventId } = useParams();
+    const navigate = useNavigate();
+    const toast = useToast();
+    const isEditing = !!eventId;
+    const organizerId = localStorage.getItem('eventOrganizerId');
+
+    const [loading, setLoading] = useState(isEditing);
+    const [saving, setSaving] = useState(false);
     const [durationData, setDurationData] = useState({
         duration: '',
         fromTime: '',
@@ -44,54 +64,47 @@ function Events() {
 
     useEffect(() => {
         AOS.init({ duration: 1000, once: true });
-        // const id  = useParams(); // event id from route if available
-        // const id = 2; // event id from route if available
-        const organizerId = 14;
 
-        if (organizerId) {
-            // http://localhost/eDengiSystem/Event/getBy/event_organizer_id/14/true
-            const loadurl = `Event/getBy/event_organizer_id/${organizerId}`;
-            console.log("Loading from URL:", loadurl);
+        if (!isEditing) {
+            setLoading(false);
+            return; // creating a new event — nothing to load
+        }
 
-            // Load existing event
-            load(loadurl).then((data) => {
-                console.log("Loaded event data:", data); // 🔍 print data to console
-                data = data[0];
-                if (data) {
-                    setEventName(data.event_name || '');
-                    setEventSubTitle(data.event_sub_title || '');
-                    setEventDescription(data.event_description || '');
-                    setFromDate(data.event_date_from || '');
-                    setToDate(data.event_date_to || '');
-                    setFromTime(data.event_time_from || '');
-                    setToTime(data.event_time_to || '');
-                    setDestination(data.event_destination || '');
-                    setContact1(data.event_contact_number_1 || '');
-                    setContact2(data.event_contact_number_2 || '');
-                    setMapLink(data.event_location_map_link || '');
-                    setDuration(data.duration || '');
-                    setDurationData(prev => ({
-                        ...prev,
-                        fromTime: data.event_time_from,
-                        toTime: data.event_time_to,
-                    }));
+        setLoading(true);
+        eventsApi.get(eventId).then((data) => {
+            if (data) {
+                setEventName(data.event_name || '');
+                setEventSubTitle(data.event_sub_title || '');
+                setEventDescription(data.event_description || '');
+                setFromDate(data.event_date_from || '');
+                setToDate(data.event_date_to || '');
+                setFromTime(data.event_time_from || '');
+                setToTime(data.event_time_to || '');
+                setDestination(data.event_destination || '');
+                setContact1(data.event_contact_number_1 || '');
+                setContact2(data.event_contact_number_2 || '');
+                setMapLink(data.event_location_map_link || '');
+                setDuration(data.duration || '');
+                setDurationData(prev => ({
+                    ...prev,
+                    fromTime: data.event_time_from,
+                    toTime: data.event_time_to,
+                }));
 
-                    setPaymentQR(null);
-                    setPaymentQRPreview('');
-                    setRandomEventId(data.random_event_id);
+                setPaymentQR(null);
+                setPaymentQRPreview('');
+                setRandomEventId(data.random_event_id);
+                if (data.random_event_id) {
                     (async () => {
                         const encId = await encryptData(data.random_event_id);
                         setQrDataUrl(base_url + '/admin/event/' + encId + '/new');
                     })();
-                    //     (async () => {
-                    //         const enc = await encryptData(text);
-                    //     })();
-                    // encId = await encryptData(data.random_event_id);
-                    // setQrDataUrl(base_url + '/admin/event/' + enc + '/new');
                 }
-            });
-        }
-    }, [id]);
+            }
+        }).catch((error) => {
+            toast.error(apiErrorMessage(error, 'Unable to load this event.'));
+        }).finally(() => setLoading(false));
+    }, [eventId, isEditing]);
 
 
     const handleSave = async () => {
@@ -100,11 +113,20 @@ function Events() {
             !eventName || !fromDate || !toDate ||
             (showMoreDetails && (!eventSubTitle || !eventDescription || !fromTime || !toTime || !destination || !contact1 || !mapLink))
         ) {
-            alert("Please fill all required fields.");
+            toast.error("Please fill all required fields.");
+            return;
+        }
+
+        if (!organizerId) {
+            // Deliberately does NOT fall back to a hardcoded organizer id —
+            // saving without one would attach this event to whichever
+            // organizer the backend happens to default to.
+            toast.error("Your organizer profile isn't available in this session. Please sign in again.");
             return;
         }
 
         const payload = {
+            event_organizer_id: organizerId,
             event_name: eventName,
             event_sub_title: eventSubTitle,
             event_description: eventDescription,
@@ -118,15 +140,23 @@ function Events() {
             event_location_map_link: mapLink,
             duration: duration,
             random_event_id: randomEventId,
-            event_id: id || null, // send null for create
             event_online_payment_qr: paymentQR // send file
         };
 
-        const res = await save("Event/save", payload);
-        if (res) {
-            alert("Event saved successfully!");
-        } else {
-            alert("Failed to save event.");
+        setSaving(true);
+        try {
+            if (isEditing) {
+                await eventsApi.update(eventId, payload);
+                toast.success("Event updated successfully!");
+            } else {
+                const created = await eventsApi.create(payload);
+                toast.success("Event created successfully!");
+                if (created?.id) navigate(`/admin/events/${created.id}/edit`, { replace: true });
+            }
+        } catch (error) {
+            toast.error(apiErrorMessage(error, 'Failed to save event.'));
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -145,10 +175,10 @@ return (
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
                     <h4 className="fw-bold mb-1 position-relative">
-                        🪔 Event Management
+                        🪔 {isEditing ? 'Edit Event' : 'Create Event'}
                     </h4>
                     <p className="mb-0 opacity-90 position-relative">
-                        Create and manage your Ganpati festival event details.
+                        {isEditing ? 'Update your festival event details.' : 'Create a new Ganpati festival event.'}
                     </p>
                 </div>
 
@@ -156,9 +186,13 @@ return (
                     type="button"
                     className="btn ep-action-btn ep-action-btn--indigo px-4"
                     onClick={handleSave}
+                    disabled={saving || loading}
                 >
-                    <i className="bi bi-check2-circle me-2"></i>
-                    Save Event
+                    {saving ? (
+                        <><span className="spinner-border spinner-border-sm me-2" />Saving...</>
+                    ) : (
+                        <><i className="bi bi-check2-circle me-2"></i>Save Event</>
+                    )}
                 </button>
             </div>
         </div>

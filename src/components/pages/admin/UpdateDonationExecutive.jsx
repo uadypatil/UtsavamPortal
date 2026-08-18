@@ -4,13 +4,16 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import '../../../App.css';
-import { load, save } from '../../../services/api';
+import { collectionExecutivesApi } from '../../../services/endpoints/collectionExecutives';
+import { apiErrorMessage } from '../../../services/httpClient';
+import { useToast } from '../../../context/ToastContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { INITIAL_FORM, validateCollector, CollectorForm } from './collectorExecutiveForm';
 
 function UpdateDonationExecutive() {
   const { donationExecutiveId } = useParams();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
@@ -25,8 +28,7 @@ function UpdateDonationExecutive() {
   const loadCollector = async () => {
     try {
       setLoading(true);
-      const response = await load(`CollectionExecutive/get/${donationExecutiveId}`);
-      const c = response?.data || response;
+      const c = await collectionExecutivesApi.get(donationExecutiveId);
 
       setForm({
         fullName: c.fullName || '',
@@ -39,9 +41,8 @@ function UpdateDonationExecutive() {
         isActive: c.isActive ?? true,
       });
     } catch (error) {
-      console.error(error);
-      alert(error?.message || 'Unable to load donation collector.');
-      navigate('/donationcollector');
+      toast.error(apiErrorMessage(error, 'Unable to load donation collector.'));
+      navigate('/admin/donationcollector');
     } finally {
       setLoading(false);
     }
@@ -63,7 +64,6 @@ function UpdateDonationExecutive() {
       setSaving(true);
 
       const payload = {
-        collectionExecutiveId: donationExecutiveId,
         seasonId: localStorage.getItem('seasonId'),
         eventId: localStorage.getItem('eventId'),
         eventOrganizerId: localStorage.getItem('eventOrganizerId'),
@@ -78,13 +78,13 @@ function UpdateDonationExecutive() {
 
       if (form.password.trim()) payload.password = form.password.trim();
 
-      await save('CollectionExecutive/save', payload);
+      // PATCH /collection-executives/{id} — id goes in the URL, not the body.
+      await collectionExecutivesApi.update(donationExecutiveId, payload);
 
-      alert('Donation collector updated successfully.');
-      navigate('/donation-collectors');
+      toast.success('Donation collector updated successfully.');
+      navigate('/admin/donationcollector');
     } catch (error) {
-      console.error(error);
-      alert(error?.message || 'Unable to update donation collector.');
+      toast.error(apiErrorMessage(error, 'Unable to update donation collector.'));
     } finally {
       setSaving(false);
     }
@@ -115,7 +115,7 @@ function UpdateDonationExecutive() {
             <h4 className="fw-bold mb-1">🪔 Update Donation Collector</h4>
             <p className="mb-0 opacity-90">Update collection executive account details.</p>
           </div>
-          <button className="btn ep-modal-secondary" onClick={() => navigate('/donation-collectors')}>
+          <button className="btn ep-modal-secondary" onClick={() => navigate('/admin/donationcollector')}>
             <i className="bi bi-arrow-left me-2" /> Back
           </button>
         </div>
@@ -128,7 +128,7 @@ function UpdateDonationExecutive() {
         saving={saving}
         onChange={update}
         onSubmit={submit}
-        onCancel={() => navigate('/donation-collectors')}
+        onCancel={() => navigate('/admin/donationcollector')}
       />
     </div>
   );

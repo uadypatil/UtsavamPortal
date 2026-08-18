@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import '../../../App.css';
@@ -8,26 +8,47 @@ import { QRCode } from 'react-qrcode-logo';
 import ganesha from '../../../assets/animatedganesha.png';
 import logo from '../../../assets/logo.png';
 import html2canvas from "html2canvas";
-// import { decryptData } from '../../utils/Encryption'; // adjust path as needed
+import { donationsApi } from '../../../services/endpoints/donations';
+import { apiErrorMessage } from '../../../services/httpClient';
 
 function DonerAnimatedReceipt() {
     useEffect(() => {
         AOS.init({ duration: 1000, once: true });
     }, []);
 
+    // The route param is named :donerid (see AppRoutes.jsx) but the value
+    // it actually carries is the server-generated receipt number produced
+    // by POST /donations — this page is public (no donor login), so the
+    // receipt number is the only identifier it's safe to expose in a URL.
+    const { donerid: receiptNumber } = useParams();
     const receiptRef = useRef(null);
     const [busy, setBusy] = useState(false);
+    const [receipt, setReceipt] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
-    // Static placeholder data for now — once the backend endpoint for a single
-    // donation-by-id is available, fetch by :donerid (via useParams) here.
-    const receipt = {
-        donorName: 'SONAL NIKAM',
-        org: 'CHANDICHA GANPATI GANESH MITRA MANDAL',
-        amount: 500,
-        dateTime: '18/08/2025, 10:30 AM',
-        receiptNo: '123456789',
-        event: 'Ganesh Chaturthi',
-    };
+    useEffect(() => {
+        if (!receiptNumber) {
+            setError('No receipt number provided.');
+            setLoading(false);
+            return;
+        }
+        setLoading(true);
+        setError('');
+        donationsApi.getByReceiptNumber(receiptNumber)
+            .then((data) => {
+                setReceipt({
+                    donorName: data.donorName || data.donor?.name || '—',
+                    org: data.organizerName || data.mandalName || data.eventOrganizerName || 'the Mandal',
+                    amount: data.amount ?? 0,
+                    dateTime: data.createdAt ? new Date(data.createdAt).toLocaleString('en-IN') : '—',
+                    receiptNo: data.receiptNumber || receiptNumber,
+                    event: data.eventName || data.event?.name || '',
+                });
+            })
+            .catch((e) => setError(apiErrorMessage(e, 'This receipt could not be found.')))
+            .finally(() => setLoading(false));
+    }, [receiptNumber]);
 
     const captureCanvas = async () => {
         const element = receiptRef.current;
@@ -98,6 +119,17 @@ function DonerAnimatedReceipt() {
     return (
         <div className="ep-receipt-page">
             <div className="d-flex flex-column align-items-center w-100">
+                {loading ? (
+                    <div className="text-center text-muted py-5">
+                        <span className="spinner-border spinner-border-sm me-2" />Loading receipt...
+                    </div>
+                ) : error || !receipt ? (
+                    <div className="text-center text-muted py-5 px-3">
+                        <i className="bi bi-receipt display-6 d-block mb-2"></i>
+                        {error || 'This receipt could not be found.'}
+                    </div>
+                ) : (
+                <>
                 <div className="ep-receipt-card" ref={receiptRef} data-aos="zoom-in">
                     <div className="ep-receipt-card-inner">
                         <div className="ep-receipt-brand">
@@ -114,14 +146,14 @@ function DonerAnimatedReceipt() {
                         <p className="ep-receipt-org">for your generous contribution to<br />{receipt.org}</p>
 
                         <div className="ep-receipt-amount-badge">
-                            <span className="amount">₹{receipt.amount.toLocaleString('en-IN')}</span>
+                            <span className="amount">₹{Number(receipt.amount).toLocaleString('en-IN')}</span>
                             <span className="label">Donated</span>
                         </div>
 
                         <ul className="ep-receipt-meta">
                             <li><i className="bi bi-clock"></i> {receipt.dateTime}</li>
                             <li><i className="bi bi-receipt"></i> Receipt No: {receipt.receiptNo}</li>
-                            <li><i className="bi bi-calendar-event"></i> {receipt.event}</li>
+                            {receipt.event && <li><i className="bi bi-calendar-event"></i> {receipt.event}</li>}
                         </ul>
 
                         <div className="ep-receipt-qr-box">
@@ -142,6 +174,15 @@ function DonerAnimatedReceipt() {
                         <i className="bi bi-share-fill me-1"></i> Share to Story
                     </button>
                 </div>
+
+                {/* Fraud/QR-misuse note: this page is read-only proof of a
+                    donation already made — viewing or sharing it cannot be
+                    used to register a new donation or claim any benefit. */}
+                <p className="text-center text-muted small mt-2 px-3 hide-on-download">
+                    This receipt is a read-only record of a completed donation.
+                </p>
+                </>
+                )}
             </div>
         </div>
     );

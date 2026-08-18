@@ -1,3 +1,8 @@
+/* Renamed from Collectionexecutive.css: this stylesheet was written for the
+   Collection Executive screen but defines the shared .ep-* admin/table/
+   modal/pagination component classes reused across every admin and
+   super-admin CRUD screen. It was previously never imported anywhere
+   (dead CSS) — now imported once globally from App.jsx. */
 /* Collection Executive additions */
 .ep-avatar-lg {
   width: 58px;
@@ -79,6 +84,10 @@
 .ep-status--active > span { background: #14b8a6; }
 .ep-status--disabled { color: #92400e; background: rgba(245,158,11,.10); }
 .ep-status--disabled > span { background: #f59e0b; }
+.ep-status--pending { color: #6d28d9; background: rgba(124,58,237,.10); }
+.ep-status--pending > span { background: #7c3aed; }
+.ep-status--danger { color: #b91c1c; background: rgba(220,38,38,.10); }
+.ep-status--danger > span { background: #dc2626; }
 .ep-row-disabled { opacity: .62; }
 .ep-icon-btn {
   width: 34px; height: 34px; padding: 0; border-radius: 9px;

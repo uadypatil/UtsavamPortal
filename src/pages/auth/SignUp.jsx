@@ -15,6 +15,15 @@ function SignUp() {
 
     const [formData, setFormData] = useState({
         // Event Manager fields
+        // ⚠️ ASSUMPTION FLAG: hardcoded to a single mandal's event id.
+        // There's no self-service "pick your event" step in this form, and
+        // the Swagger doc doesn't document a public Event Manager signup
+        // endpoint at all (see handleEventManagerSubmit) — Collection
+        // Executives are created BY an Event Organizer via
+        // POST /collection-executives, not by self-signup. Left as-is
+        // rather than guessing a replacement value; flagging this as
+        // something that needs a real backend-supported flow (e.g. an
+        // organizer invite link/code) rather than a hardcoded id.
         event_id: 'EVISCNSK001',
         event_manager_name: '',
         event_manager_contact_number: '',
@@ -99,12 +108,24 @@ function SignUp() {
 
         setSubmittingManager(true);
         try {
+            // ⚠️ NOTE: this still targets the legacy EventManager/save
+            // endpoint (api_url, non-REST) — the Swagger doc provided
+            // doesn't document a public self-signup endpoint for Event
+            // Managers/Collection Executives (only POST /collection-executives,
+            // which is "created by an Event Organizer", not self-service
+            // signup). Migrating this form fully depends on that backend
+            // decision. `agreement` is included here since the checkbox
+            // above now legitimately requires it before submission — if the
+            // backend doesn't have a column for it yet, it will simply be
+            // ignored; it should NOT be dropped from the frontend, since
+            // that would put the app back to silently discarding consent.
             const response = await axios.post(api_url + 'EventManager/save', {
                 event_id: formData.event_id,
                 event_manager_name: formData.event_manager_name,
                 event_manager_contact_number: formData.event_manager_contact_number,
                 username: formData.username,
                 password: formData.password,
+                agreement: formData.agreement,
             });
 
             if (response.data.status == "success") {
@@ -134,11 +155,14 @@ function SignUp() {
         try {
             // Was pointed at a hardcoded localhost URL that didn't match the app's
             // configured API host — now uses the same api_url as everything else.
+            // Same note as handleEventManagerSubmit above re: `agreement` and the
+            // legacy (non-Swagger) endpoint this still targets.
             const response = await axios.post(api_url + 'EventOrganizer/save', {
                 organizer_name: formData.event_organizer_name,
                 organizer_contact_number: formData.event_organizer_contact,
                 username: formData.doner_username,
                 password: formData.doner_password,
+                agreement: formData.doner_agreement,
             });
 
             if (response.data.status === 'success') {
@@ -227,7 +251,10 @@ function SignUp() {
 
                     <div className="mb-3 d-flex gap-2 align-items-start">
                         <input type="checkbox" name="agreement" checked={formData.agreement} onChange={handleChange} className="form-check-input mt-1" />
-                        <label className="form-label mb-0">I agree to the terms and confirm my details are accurate.</label>
+                        <label className="form-label mb-0">
+                            I agree to the <Link to="/terms-of-use" target="_blank">Terms of Use</Link> and{' '}
+                            <Link to="/privacy-policy" target="_blank">Privacy Policy</Link>, and confirm my details are accurate.
+                        </label>
                     </div>
                     {errors.agreement && <div className="ep-field-error mb-2">{errors.agreement}</div>}
 
@@ -319,7 +346,10 @@ function SignUp() {
                             onChange={handleChange}
                             className="form-check-input mt-1"
                         />
-                        <label className="form-label mb-0">I agree to the terms and confirm my details are accurate.</label>
+                        <label className="form-label mb-0">
+                            I agree to the <Link to="/terms-of-use" target="_blank">Terms of Use</Link> and{' '}
+                            <Link to="/privacy-policy" target="_blank">Privacy Policy</Link>, and confirm my details are accurate.
+                        </label>
                     </div>
                     {errors.doner_agreement && <div className="ep-field-error mb-2">{errors.doner_agreement}</div>}
 

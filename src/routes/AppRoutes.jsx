@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../components/pages/website/Home";
 import Dashboard from "../pages/admin/Dashboard";
 import Base from "../components/pages/admin/Base";
-import Report from "../components/pages/admin/Reports";
 import SignIn from "../pages/auth/SignIn";
 import SignUp from "../pages/auth/SignUp";
 import LogOut from "../components/LogOut";
@@ -12,7 +11,11 @@ import WebsiteEvents from "../components/pages/website/WebsiteEvents";
 import GuideLines from "../components/pages/website/GuideLines";
 import WebsiteContact from "../components/pages/website/WebsiteContact";
 import Events from "../components/pages/admin/Events";
-import EventManagers from "../components/pages/admin/EventManagers";
+import EventsList from "../components/pages/admin/EventsList";
+import ExpenseManager from "../components/pages/admin/ExpenseManager";
+import ReceiptTemplateManager from "../components/pages/admin/ReceiptTemplateManager";
+import DonorManager from "../components/pages/admin/DonorManager";
+import DonationOversight from "../components/pages/admin/DonationOversight";
 import EventManagerBase from "../components/pages/event_manager/EventManagerBase";
 import EventManagerHome from "../pages/event-manager/EventManagerHome";
 import LoadQrScreen from "../components/pages/event_manager/LoadQrScreen";
@@ -22,11 +25,23 @@ import EventManagerRevenueReport from "../components/pages/event_manager/EventMa
 import EventManagerProfile from "../components/pages/event_manager/EventManagerProfile";
 import NewEventManager from "../components/pages/event_manager/NewEventManager";
 import DonerAnimatedReceipt from "../components/pages/website/DonarAnimatedReceipt";
+import PrivacyPolicy from "../components/pages/legal/PrivacyPolicy";
+import TermsOfUse from "../components/pages/legal/TermsOfUse";
 import NotFound from "../pages/errors/404";
 import CollectionExecutive from "../components/pages/admin/CollectionExecutive";
 import AddDonationExecutive from "../components/pages/admin/AddDonationExecutive";
 import UpdateDonationExecutive from "../components/pages/admin/UpdateDonationExecutive";
-// import PrivateRoute from "../components/PrivateRoute";
+import PrivateRoute from "../components/PrivateRoute";
+
+// Super Admin
+import SuperAdminBase from "../components/pages/super_admin/SuperAdminBase";
+import SuperAdminDashboard from "../pages/superadmin/Dashboard";
+import SuperAdminUsers from "../pages/superadmin/Users";
+import SuperAdminEventOrganizers from "../pages/superadmin/EventOrganizers";
+import SuperAdminSeasons from "../pages/superadmin/Seasons";
+import SuperAdminExpenseCategories from "../pages/superadmin/ExpenseCategories";
+import SuperAdminExpenseApprovals from "../pages/superadmin/ExpenseApprovals";
+import SuperAdminReports from "../pages/superadmin/Reports";
 
 const AppRoutes = () => {
   return (
@@ -41,28 +56,52 @@ const AppRoutes = () => {
           path="/doner/:donerid/receipt"
           element={<DonerAnimatedReceipt />}
         />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-use" element={<TermsOfUse />} />
 
         {/* Authentication */}
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/logout" element={<LogOut />} />
 
+        {/* Super Admin */}
+        <Route
+          path="/superadmin"
+          element={
+            <PrivateRoute roles={["super_admin"]}>
+              <SuperAdminBase />
+            </PrivateRoute>
+          }
+        >
+          <Route path="dashboard" element={<SuperAdminDashboard />} />
+          <Route path="users" element={<SuperAdminUsers />} />
+          <Route path="event-organizers" element={<SuperAdminEventOrganizers />} />
+          <Route path="seasons" element={<SuperAdminSeasons />} />
+          <Route path="expense-categories" element={<SuperAdminExpenseCategories />} />
+          <Route path="expense-approvals" element={<SuperAdminExpenseApprovals />} />
+          <Route path="reports" element={<SuperAdminReports />} />
+        </Route>
+
         {/* Admin */}
         <Route
           path="/admin"
           element={
-            // <PrivateRoute>
-            <Base />
-            // </PrivateRoute>
+            <PrivateRoute roles={["organizer"]}>
+              <Base />
+            </PrivateRoute>
           }
         >
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="reports" element={<Report />} />
           <Route path="donationcollector" element={<CollectionExecutive />} />
           <Route path="addDCollector/:donationExecutiveId" element={<UpdateDonationExecutive />} />
           <Route path="addDCollector" element={<AddDonationExecutive />} />
-          <Route path="expencemanager" element={<EventManagers />} />
-          <Route path="events/all" element={<Events />} />
+          <Route path="expenses" element={<ExpenseManager />} />
+          <Route path="receipt-template" element={<ReceiptTemplateManager />} />
+          <Route path="donors" element={<DonorManager />} />
+          <Route path="donations" element={<DonationOversight />} />
+          <Route path="events/all" element={<EventsList />} />
+          <Route path="events/new" element={<Events />} />
+          <Route path="events/:eventId/edit" element={<Events />} />
           <Route path="event/:eventid/new" element={<NewEventManager />} />
         </Route>
 
@@ -70,9 +109,9 @@ const AppRoutes = () => {
         <Route
           path="/em"
           element={
-            // <PrivateRoute>
-            <EventManagerBase />
-            // </PrivateRoute>
+            <PrivateRoute roles={["event_manager"]}>
+              <EventManagerBase />
+            </PrivateRoute>
           }
         >
           <Route path="dashboard" element={<EventManagerHome />} />

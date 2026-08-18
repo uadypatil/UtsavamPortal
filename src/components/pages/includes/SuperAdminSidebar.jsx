@@ -6,10 +6,12 @@ import { Link, useLocation } from "react-router-dom";
 
 const NAV_ITEMS = [
     { to: 'dashboard', label: 'Dashboard', icon: 'bi-speedometer2' },
-    { to: 'events/all', label: 'Event', icon: 'bi-calendar-event' },
-    { to: 'donationcollector', label: 'Donation Collector', icon: 'bi-people-fill' },
-    { to: 'expencemanager', label: 'Expences Manager', icon: 'bi-people-fill' },
-    { to: 'reports', label: 'Revenue Report', icon: 'bi-graph-up-arrow' },
+    { to: 'users', label: 'Users', icon: 'bi-person-badge' },
+    { to: 'event-organizers', label: 'Event Organizers', icon: 'bi-shop' },
+    { to: 'seasons', label: 'Seasons', icon: 'bi-calendar3-range' },
+    { to: 'expense-categories', label: 'Expense Categories', icon: 'bi-tags' },
+    { to: 'expense-approvals', label: 'Expense Approvals', icon: 'bi-check2-square' },
+    { to: 'reports', label: 'Platform Reports', icon: 'bi-graph-up-arrow' },
 ];
 
 function SuperAdminSidebar() {
@@ -18,24 +20,23 @@ function SuperAdminSidebar() {
 
     return (
         <>
-            {/* Toggle Button - Only visible on small screens */}
             <button
                 className="btn btn-sm btn-primary d-lg-none m-2"
                 type="button"
                 data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasSidebar"
-                aria-controls="offcanvasSidebar"
+                data-bs-target="#offcanvasSidebarSuper"
+                aria-controls="offcanvasSidebarSuper"
                 style={{ height: '35px', width: '60px' }}
             >
                 <i className="bi bi-list"></i>
             </button>
 
-            {/* Sidebar for large screens */}
             <div className="text-white m-2 rounded rounded-5 admin-sidebar ep-glass-sidebar d-none d-lg-block" style={{ position: 'fixed' }}>
                 <div className="mb-2 d-flex justify-content-center text-center w-100 pt-4" style={{ flexDirection: 'column' }}>
                     <div className="mx-auto rounded-4" style={{ background: 'rgba(255,255,255,0.9)', width: 'fit-content' }}>
                         <img src={logo} alt="Logo" className="img-fluid" style={{ maxWidth: 160 }} />
                     </div>
+                    <span className="text-white-50 small mt-2">Super Admin</span>
                 </div>
 
                 <ul className="nav flex-column p-3 gap-1">
@@ -54,15 +55,14 @@ function SuperAdminSidebar() {
                 </ul>
             </div>
 
-            {/* Offcanvas Sidebar for small screens */}
             <div
                 className="offcanvas offcanvas-start d-lg-none ep-glass-sidebar"
                 tabIndex="-1"
-                id="offcanvasSidebar"
-                aria-labelledby="offcanvasSidebarLabel"
+                id="offcanvasSidebarSuper"
+                aria-labelledby="offcanvasSidebarSuperLabel"
             >
                 <div className="offcanvas-header" style={{ height: '50px' }}>
-                    <h5 className="offcanvas-title text-white" id="offcanvasSidebarLabel">Menu</h5>
+                    <h5 className="offcanvas-title text-white" id="offcanvasSidebarSuperLabel">Menu</h5>
                     <button type="button" className="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div className="offcanvas-body">

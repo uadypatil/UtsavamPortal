@@ -29,9 +29,9 @@ const PrivateRoute = ({ children, roles }) => {
         const role = getRole();
         if (!roles.includes(role)) {
             const fallback =
-                role === 'super_admin' ? '/superadmin/dashboard' :
-                role === 'organizer' ? '/admin/dashboard' :
-                role === 'event_manager' ? '/em/dashboard' :
+                role === 'SUPER_ADMIN' ? '/superadmin/dashboard' :
+                role === 'ORGANIZER' ? '/admin/dashboard' :
+                role === 'EVENT_MANAGER' ? '/em/dashboard' :
                 '/signin';
             return <Navigate to={fallback} replace />;
         }

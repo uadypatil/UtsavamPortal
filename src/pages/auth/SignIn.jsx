@@ -57,15 +57,25 @@ function SignIn() {
             const redirectTo = location.state?.from?.pathname;
             if (redirectTo) {
                 navigate(redirectTo, { replace: true });
-            } else if (account.role === 'event_manager') {
-                navigate('/em/dashboard');
-            } else if (account.role === 'organizer') {
-                navigate('/admin/dashboard');
-            } else if (account.role === 'super_admin') {
-                navigate('/superadmin/dashboard');
             } else {
-                // Unknown role from API — surface it instead of silently going nowhere.
-                toast.info('Logged in, but no dashboard is mapped for this role yet.');
+                switch (account.role) {
+                    case 'event_manager':
+                        navigate('/em/dashboard');
+                        break;
+
+                    case 'organizer':
+                        navigate('/admin/dashboard');
+                        break;
+
+                    case 'SUPER_ADMIN':
+                        navigate('/superadmin/dashboard');
+                        break;
+
+                    default:
+                        // Unknown role from API — surface it instead of silently going nowhere.
+                        toast.info('Logged in, but no dashboard is mapped for this role yet.');
+                        break;
+                }
             }
         } catch (error) {
             // Never log credentials or raw error payloads that might carry

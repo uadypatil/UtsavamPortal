@@ -4,18 +4,6 @@ import { login as loginRequest } from '../services/endpoints/auth';
 
 const USER_KEY = 'ep_auth_user';
 
-/**
- * Auth lifecycle built around the real backend (POST /auth/login,
- * POST /auth/refresh — see services/endpoints/auth.js). Replaces the old
- * version that stored only a boolean + role string with no token model.
- *
- * IMPORTANT (see PrivateRoute.jsx / SECURITY note): everything this hook
- * exposes is a *client-side convenience* for routing/UI decisions only.
- * The backend remains the source of truth for authorization — every
- * protected API call still carries the bearer token and the server
- * decides whether it's actually allowed, regardless of what a user edits
- * in localStorage.
- */
 function readStoredUser() {
   try {
     const raw = localStorage.getItem(USER_KEY);
@@ -25,11 +13,8 @@ function readStoredUser() {
   }
 }
 
-// Simple event bus so every useAuth() consumer re-renders when auth state
-// changes anywhere (login in one component, session-expiry from the http
-// interceptor, logout from another component), without needing a Context
-// provider rewrite of the whole app in this pass.
 const listeners = new Set();
+
 function broadcast() {
   listeners.forEach((fn) => fn());
 }
@@ -38,12 +23,23 @@ export function useAuth() {
   const [user, setUser] = useState(readStoredUser);
 
   useEffect(() => {
-    const onChange = () => setUser(readStoredUser());
+    const onChange = () => {
+      setUser(readStoredUser());
+    };
+
     listeners.add(onChange);
+
     const unsubscribeExpired = onSessionExpired(() => {
+      tokenStore.clear();
+
       localStorage.removeItem(USER_KEY);
+      localStorage.removeItem('ep_auth');
+      localStorage.removeItem('isLoggedIn');
+
       onChange();
+      broadcast();
     });
+
     return () => {
       listeners.delete(onChange);
       unsubscribeExpired();
@@ -51,48 +47,130 @@ export function useAuth() {
   }, []);
 
   const login = useCallback(async ({ username, password }) => {
-    const result = await loginRequest({ username, password });
-    // Response shape isn't confirmed by the available doc extract (the
-    // Schemas section wasn't rendered) — this accepts the two most likely
-    // shapes so it degrades gracefully rather than silently failing.
-    const accessToken = result?.accessToken || result?.token;
-    const refreshToken = result?.refreshToken;
-    const account = result?.user || result?.account || result || {};
-    const role = account?.role || result?.role || null;
+    const result = await loginRequest({
+      username,
+      password,
+    });
 
-    if (!accessToken) {
-      throw new Error('Login response did not include an access token.');
+    /*
+     * Support both:
+     *
+     * 1. loginRequest() returns:
+     *    {
+     *      accessToken,
+     *      refreshToken,
+     *      actor
+     *    }
+     *
+     * 2. loginRequest() returns:
+     *    {
+     *      success: true,
+     *      message: "...",
+     *      data: {
+     *        accessToken,
+     *        refreshToken,
+     *        actor
+     *      }
+     *    }
+     */
+
+    const data = result?.data?.accessToken
+      ? result.data
+      : result;
+
+    if (!data) {
+      throw new Error('Invalid login response from server.');
     }
 
-    tokenStore.setTokens({ accessToken, refreshToken });
+    const accessToken = data?.accessToken;
+    const refreshToken = data?.refreshToken;
+    const account = data?.actor || {};
+
+    if (!accessToken) {
+      throw new Error(
+        'Login response did not include an access token.'
+      );
+    }
+
+    if (!account?.id) {
+      throw new Error(
+        'Login response did not include actor information.'
+      );
+    }
+
+    const role = account?.role || null;
+
+    /*
+     * Store JWT tokens.
+     */
+    tokenStore.setTokens({
+      accessToken,
+      refreshToken,
+    });
+
+    /*
+     * Store frontend user information.
+     */
     const nextUser = {
+      id: account?.id || null,
       role,
+      name: account?.fullName || null,
       username: account?.username || username,
-      id: account?.id || account?._id || null,
-      name: account?.name || account?.fullName || null,
+      actorType: account?.actorType || null,
     };
-    localStorage.setItem(USER_KEY, JSON.stringify(nextUser));
+
+    localStorage.setItem(
+      USER_KEY,
+      JSON.stringify(nextUser)
+    );
+
+    /*
+     * Update React state.
+     */
     setUser(nextUser);
+
+    /*
+     * Notify every useAuth() instance.
+     */
     broadcast();
+
     return nextUser;
   }, []);
 
   const logout = useCallback(() => {
     tokenStore.clear();
+
     localStorage.removeItem(USER_KEY);
-    // Legacy keys from the pre-JWT auth model — cleared so a stale flag
-    // can never grant a false-positive `isAuthenticated()`.
     localStorage.removeItem('ep_auth');
     localStorage.removeItem('isLoggedIn');
+
     setUser(null);
     broadcast();
   }, []);
 
-  const isAuthenticated = useCallback(() => !!tokenStore.getAccessToken() && !!readStoredUser(), []);
-  const getRole = useCallback(() => readStoredUser()?.role || null, []);
-  const getUser = useCallback(() => readStoredUser(), []);
+  const isAuthenticated = useCallback(() => {
+    const accessToken = tokenStore.getAccessToken();
+    const storedUser = readStoredUser();
 
-  return { user, login, logout, isAuthenticated, getRole, getUser };
+    return Boolean(accessToken && storedUser);
+  }, []);
+
+  const getRole = useCallback(() => {
+    return readStoredUser()?.role || null;
+  }, []);
+
+  const getUser = useCallback(() => {
+    return readStoredUser();
+  }, []);
+
+  return {
+    user,
+    login,
+    logout,
+    isAuthenticated,
+    getRole,
+    getUser,
+  };
 }
 
 export default useAuth;

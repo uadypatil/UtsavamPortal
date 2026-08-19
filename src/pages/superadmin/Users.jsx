@@ -27,7 +27,7 @@ export default function Users() {
                     label: 'Role',
                     render: (row) => (
                         <span className="ep-avatar ep-avatar--indigo" style={{ width: 'auto', padding: '4px 10px', borderRadius: 20 }}>
-                            {row.role === 'super_admin' ? 'Super Admin' : row.role === 'affiliate' ? 'Affiliate' : row.role || '—'}
+                            {row.role === 'SUPER_ADMIN' ? 'Super Admin' : row.role === 'affiliate' ? 'Affiliate' : row.role || '—'}
                         </span>
                     ),
                 },
@@ -39,7 +39,7 @@ export default function Users() {
                 {
                     name: 'role', label: 'Role', type: 'select', required: true, col: 'col-md-6',
                     options: [
-                        { value: 'super_admin', label: 'Super Admin' },
+                        { value: 'SUPER_ADMIN', label: 'Super Admin' },
                         { value: 'affiliate', label: 'Affiliate' },
                     ],
                 },

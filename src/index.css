@@ -509,13 +509,13 @@ textarea:focus-visible {
   position: relative;
   overflow: hidden;
 }
-
+/*
 .ep-festive-banner::after {
   content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(circle at 85% 20%, rgba(255, 207, 92, 0.35), transparent 55%);
-}
+}*/
 
 /* ==========================================================================
    Glassmorphism dashboard system (Phase 3) — mesh background, glass sidebar,

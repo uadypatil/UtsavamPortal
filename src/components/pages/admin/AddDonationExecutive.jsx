@@ -9,10 +9,12 @@ import { apiErrorMessage } from '../../../services/httpClient';
 import { useToast } from '../../../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 import { INITIAL_FORM, validateCollector, CollectorForm } from './collectorExecutiveForm';
+import { useAuth } from '../../../hooks/useAuth';
 
 function AddDonationExecutive() {
   const navigate = useNavigate();
   const toast = useToast();
+  const { user } = useAuth();
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
@@ -35,9 +37,9 @@ function AddDonationExecutive() {
     try {
       setSaving(true);
       await collectionExecutivesApi.create({
-        seasonId: localStorage.getItem('seasonId'),
-        eventId: localStorage.getItem('eventId'),
-        eventOrganizerId: localStorage.getItem('eventOrganizerId'),
+        seasonId: user?.seasonId,
+        eventId: user?.eventId,
+        eventOrganizerId: user?.id,
         fullName: form.fullName.trim(),
         username: form.username.trim().toLowerCase(),
         password: form.password,

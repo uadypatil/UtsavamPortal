@@ -52,18 +52,20 @@ function SignIn() {
             // services/endpoints/auth.js. Replaces the legacy
             // Main/authenticateUser call, which didn't issue real tokens.
             const account = await login(formData);
-            toast.success('Login successful!');
+          toast.success('Login successful!');
+
+          console.log(account.actorType)
 
             const redirectTo = location.state?.from?.pathname;
             if (redirectTo) {
                 navigate(redirectTo, { replace: true });
             } else {
-                switch (account.role) {
-                    case 'event_manager':
+                switch (account.role == null ? account.actorType : account.role) {
+                    case 'EVENT_MANAGER':
                         navigate('/em/dashboard');
                         break;
 
-                    case 'organizer':
+                    case 'EVENT_ORGANIZER':
                         navigate('/admin/dashboard');
                         break;
 
@@ -155,7 +157,7 @@ function SignIn() {
                                         <>
                                             <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                                             Signing in...
-                                        </> 
+                                        </>
                                     ) : (
                                         'Sign In'
                                     )}

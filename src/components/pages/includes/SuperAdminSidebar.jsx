@@ -13,6 +13,16 @@ const NAV_ITEMS = [
         icon: 'bi-speedometer2',
     },
     {
+        to: '/superadmin/seasons',
+        label: 'Seasons',
+        icon: 'bi-calendar3-range',
+  },
+  {
+        to: '/superadmin/events',
+        label: 'Events',
+        icon: 'bi-calendar-event',
+    },
+    {
         to: '/superadmin/users',
         label: 'Users',
         icon: 'bi-person-badge',
@@ -21,11 +31,6 @@ const NAV_ITEMS = [
         to: '/superadmin/event-organizers',
         label: 'Event Organizers',
         icon: 'bi-shop',
-    },
-    {
-        to: '/superadmin/seasons',
-        label: 'Seasons',
-        icon: 'bi-calendar3-range',
     },
     {
         to: '/superadmin/expense-categories',

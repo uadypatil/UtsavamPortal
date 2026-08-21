@@ -348,8 +348,6 @@ export default function EntityListPage({
                         type="button"
                         className="btn ep-action-btn ep-action-btn--indigo"
                         onClick={() => {
-                            console.log('🔥 CLICK REACHED BUTTON');
-                            alert('BUTTON CLICKED');
                             openCreate();
                         }}
                         disabled={saving || !canCreate}

@@ -14,7 +14,7 @@ import NavbarCustom from '../includes/NavbarCustom';
  * only the platform owner/legal counsel can fill in — this is not a
  * substitute for legal review before go-live.
  */
-export default function PrivacyPolicy() {
+const PrivacyPolicy = () => {
     useEffect(() => {
         AOS.init({ duration: 800, once: true });
     }, []);
@@ -115,3 +115,5 @@ export default function PrivacyPolicy() {
         </>
     );
 }
+
+export default PrivacyPolicy;

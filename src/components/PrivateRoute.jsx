@@ -18,7 +18,7 @@ import { useAuth } from '../hooks/useAuth';
  *   for their actual role (or /signin if not authenticated at all).
  */
 const PrivateRoute = ({ children, roles }) => {
-    const { isAuthenticated, getRole } = useAuth();
+    const { isAuthenticated, getRole, getUser } = useAuth();
     const location = useLocation();
 
     if (!isAuthenticated()) {
@@ -26,11 +26,13 @@ const PrivateRoute = ({ children, roles }) => {
     }
 
     if (roles && roles.length > 0) {
-        const role = getRole();
+      const user = getUser();
+      const role = getRole() || user.actorType;
+      console.log(role);
         if (!roles.includes(role)) {
             const fallback =
                 role === 'SUPER_ADMIN' ? '/superadmin/dashboard' :
-                role === 'ORGANIZER' ? '/admin/dashboard' :
+                role === 'EVENT_ORGANIZER' ? '/admin/dashboard' :
                 role === 'EVENT_MANAGER' ? '/em/dashboard' :
                 '/signin';
             return <Navigate to={fallback} replace />;

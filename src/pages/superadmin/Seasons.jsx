@@ -16,12 +16,14 @@ export default function Seasons() {
             statusField="status"
             statusValues={STATUS_VALUES}
             columns={[
-                { key: 'name', label: 'Season Name' },
+                { key: 'seasonName', label: 'Season Name' },
                 { key: 'startDate', label: 'Start Date' },
                 { key: 'endDate', label: 'End Date' },
+                { key: 'seasonCode', label: 'Season Code' },
             ]}
             formFields={[
-                { name: 'name', label: 'Season Name', required: true, placeholder: 'e.g. Ganeshotsav 2026', col: 'col-12' },
+                { name: 'seasonName', label: 'Season Name', required: true, placeholder: 'e.g. Ganeshotsav 2026', col: 'col-12' },
+                { name: 'seasonCode', label: 'Season Code', required: true, placeholder: 'e.g. GANSH_453', col: 'col-md-12' },
                 { name: 'startDate', label: 'Start Date', type: 'date', required: true, col: 'col-md-6' },
                 { name: 'endDate', label: 'End Date', type: 'date', required: true, col: 'col-md-6' },
             ]}

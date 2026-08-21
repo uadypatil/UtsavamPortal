@@ -117,6 +117,8 @@ export function useAuth() {
       name: account?.fullName || null,
       username: account?.username || username,
       actorType: account?.actorType || null,
+      seasonId: account?.seasonId || null,
+      eventId: account?.eventId || null,
     };
 
     localStorage.setItem(

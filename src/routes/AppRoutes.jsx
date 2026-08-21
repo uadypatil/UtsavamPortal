@@ -42,6 +42,7 @@ import SuperAdminSeasons from "../pages/superadmin/Seasons";
 import SuperAdminExpenseCategories from "../pages/superadmin/ExpenseCategories";
 import SuperAdminExpenseApprovals from "../pages/superadmin/ExpenseApprovals";
 import SuperAdminReports from "../pages/superadmin/Reports";
+import SuperAdminEvents from "../pages/superadmin/Events";
 
 const AppRoutes = () => {
   return (
@@ -80,13 +81,14 @@ const AppRoutes = () => {
           <Route path="expense-categories" element={<SuperAdminExpenseCategories />} />
           <Route path="expense-approvals" element={<SuperAdminExpenseApprovals />} />
           <Route path="reports" element={<SuperAdminReports />} />
+          <Route path="events" element={<SuperAdminEvents />} />
         </Route>
 
         {/* Admin */}
         <Route
           path="/admin"
           element={
-            <PrivateRoute roles={["organizer"]}>
+            <PrivateRoute roles={["EVENT_ORGANIZER"]}>
               <Base />
             </PrivateRoute>
           }
@@ -109,7 +111,7 @@ const AppRoutes = () => {
         <Route
           path="/em"
           element={
-            <PrivateRoute roles={["event_manager"]}>
+            <PrivateRoute roles={["EVENT_MANAGER"]}>
               <EventManagerBase />
             </PrivateRoute>
           }
@@ -128,7 +130,7 @@ const AppRoutes = () => {
           />
           <Route path="profile/me" element={<EventManagerProfile />} />
         </Route>
-        
+
         {/* 404 error page */}
         <Route path="/*" element={<NotFound />} />
       </Routes>

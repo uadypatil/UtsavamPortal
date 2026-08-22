@@ -61,7 +61,7 @@ function SignIn() {
                 navigate(redirectTo, { replace: true });
             } else {
                 switch (account.role == null ? account.actorType : account.role) {
-                    case 'EVENT_MANAGER':
+                    case 'COLLECTION_EXECUTIVE':
                         navigate('/em/dashboard');
                         break;
 

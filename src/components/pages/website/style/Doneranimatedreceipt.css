@@ -1,0 +1,428 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap");
+
+/* ============================================================
+   Utsavam Donation Receipt — now reskinned onto the app's shared
+   ceremonial theme (--receipt-gold / --receipt-maroon / --receipt-ink /
+   --receipt-paper / --receipt-header-end, Playfair Display + Cinzel).
+   Mobile: tall portrait card. Tablet+/Desktop: wide landscape card.
+   ============================================================ */
+
+:root {
+  --ep-purple-deep: var(--receipt-header-end, #180a2b);
+  --ep-purple: var(--receipt-maroon, #2a0f45);
+  --ep-purple-light: var(--receipt-ink, #2a1245);
+  --ep-gold: var(--receipt-gold-deep, #c9a227);
+  --ep-gold-bright: var(--receipt-gold, #d9bb7c);
+  --ep-gold-soft: rgba(201, 162, 39, 0.35);
+  --ep-ivory: var(--receipt-paper, #f6efe0);
+  --ep-ivory-dark: #ecdfc4;
+  --ep-ink: var(--receipt-ink, #2a1245);
+  --ep-lavender: #c9b6df;
+}
+
+.ep-receipt-page {
+  width: 100%;
+  padding: 28px 14px 48px;
+  display: flex;
+  justify-content: center;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ---------- Card shell ---------- */
+
+.ep-receipt-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--ep-ivory);
+  box-shadow:
+    0 18px 45px rgba(31, 11, 61, 0.35),
+    0 2px 0 var(--ep-gold-soft) inset;
+  border: 1px solid var(--ep-gold-soft);
+}
+
+.ep-receipt-card-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "header"
+    "donated"
+    "amount"
+    "qr"
+    "divider"
+    "meta"
+    "footer";
+  position: relative;
+}
+
+/* ---------- Header band ---------- */
+
+.ep-r-header {
+  grid-area: header;
+  position: relative;
+  padding: 30px 22px 26px;
+  text-align: center;
+  background: radial-gradient(120% 160% at 50% -10%, var(--ep-purple-light) 0%, var(--ep-purple) 45%, var(--ep-purple-deep) 100%);
+  overflow: hidden;
+}
+
+.ep-r-header-mandala {
+  position: absolute;
+  top: -18px;
+  width: 150px;
+  height: 150px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+.ep-r-header-mandala.left { left: -34px; }
+.ep-r-header-mandala.right { right: -34px; transform: scaleX(-1); }
+
+.ep-r-mascot {
+  width: 74px;
+  height: auto;
+  margin: 0 auto 14px;
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+}
+
+.ep-r-eyebrow {
+  color: var(--ep-gold-bright);
+  font-family: "Cinzel", Georgia, serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 3.5px;
+  margin: 0 0 6px;
+}
+
+.ep-r-org {
+  color: var(--ep-gold-bright);
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 0 0 6px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+.ep-r-subtitle {
+  color: var(--ep-lavender);
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+/* ---------- Corner flourishes (ivory section) ---------- */
+
+.ep-r-corner {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  opacity: 0.75;
+  z-index: 2;
+  pointer-events: none;
+}
+.ep-r-corner.tl { top: 14px; left: 14px; }
+.ep-r-corner.tr { top: 14px; right: 14px; transform: scaleX(-1); }
+.ep-r-corner.bl { bottom: 14px; left: 14px; transform: scaleY(-1); }
+.ep-r-corner.br { bottom: 14px; right: 14px; transform: scale(-1, -1); }
+
+/* ---------- Donated by ---------- */
+
+.ep-r-donated {
+  grid-area: donated;
+  text-align: center;
+  padding: 30px 26px 4px;
+}
+
+.ep-r-donated-label {
+  color: var(--ep-gold);
+  font-family: "Cinzel", Georgia, serif;
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: 3px;
+  margin: 0 0 8px;
+}
+
+.ep-r-donor-name {
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 26px;
+  color: var(--ep-ink);
+  margin: 0;
+  word-break: break-word;
+}
+
+/* ---------- Amount badge ---------- */
+
+.ep-r-amount {
+  grid-area: amount;
+  padding: 18px 26px 6px;
+  display: flex;
+  justify-content: center;
+}
+
+.ep-r-amount-box {
+  position: relative;
+  min-width: 210px;
+  padding: 16px 34px;
+  text-align: center;
+  color: var(--ep-gold-bright);
+  background: linear-gradient(135deg, var(--ep-purple-light), var(--ep-purple-deep));
+  border: 1px solid var(--ep-gold);
+  clip-path: polygon(
+    14px 0%, calc(100% - 14px) 0%, 100% 50%, calc(100% - 14px) 100%,
+    14px 100%, 0% 50%
+  );
+}
+
+.ep-r-amount-value {
+  font-family: "Playfair Display", serif;
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: 0.5px;
+  display: block;
+}
+
+/* ---------- QR block ---------- */
+
+.ep-r-qr {
+  grid-area: qr;
+  padding: 20px 26px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ep-r-qr-box {
+  position: relative;
+  padding: 10px;
+  background: #ffffff;
+  border: 1px solid var(--ep-gold);
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(42, 18, 69, 0.12);
+  display: inline-flex;
+}
+
+.ep-r-qr-caption {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--ep-ink);
+  opacity: 0.85;
+}
+
+/* ---------- Divider ---------- */
+
+.ep-r-divider {
+  grid-area: divider;
+  margin: 14px 26px 0;
+  border-top: 1px dashed var(--ep-gold-soft);
+}
+
+/* ---------- Meta row (date / receipt no) ---------- */
+
+.ep-r-meta {
+  grid-area: meta;
+  padding: 14px 26px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--ep-ink);
+}
+
+.ep-r-meta strong {
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+.ep-r-meta-event {
+  grid-area: meta-event;
+  padding: 6px 26px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ep-ink);
+  opacity: 0.75;
+}
+
+/* ---------- Footer ---------- */
+
+.ep-r-footer {
+  grid-area: footer;
+  padding: 16px 22px 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.ep-r-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ep-r-footer-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--ep-gold);
+  background: #fff;
+  padding: 3px;
+  object-fit: contain;
+}
+
+.ep-r-footer-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ep-purple);
+  letter-spacing: 0.2px;
+}
+
+.ep-r-footer-text b {
+  color: var(--ep-gold);
+}
+
+.ep-r-demo-badge {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ep-ink);
+  background: var(--ep-ivory-dark);
+  border: 1px solid var(--ep-gold-soft);
+  border-radius: 999px;
+  padding: 6px 16px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Desktop / tablet — wide landscape composition
+   ============================================================ */
+
+@media (min-width: 760px) {
+  .ep-receipt-card {
+    max-width: 880px;
+  }
+
+  .ep-receipt-card-inner {
+    grid-template-columns: 1.35fr 1fr;
+    grid-template-areas:
+      "header header"
+      "donated qr"
+      "amount qr"
+      "meta-event qr"
+      "divider divider"
+      "meta meta"
+      "footer footer";
+  }
+
+  .ep-r-header {
+    text-align: left;
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .ep-r-mascot {
+    margin: 0;
+    width: 84px;
+    flex-shrink: 0;
+  }
+
+  .ep-r-header-text {
+    flex: 1;
+  }
+
+  .ep-r-header-mandala.left {
+    left: auto;
+    right: 210px;
+    top: -30px;
+  }
+  .ep-r-header-mandala.right {
+    right: -40px;
+  }
+
+  .ep-r-donated {
+    text-align: left;
+    padding: 34px 20px 6px 40px;
+  }
+
+  .ep-r-amount {
+    justify-content: flex-start;
+    padding: 14px 20px 10px 40px;
+  }
+
+  .ep-r-meta-event {
+    text-align: left;
+    padding: 4px 20px 0 40px;
+  }
+
+  .ep-r-qr {
+    grid-row: 2 / span 3;
+    padding: 34px 40px 10px 20px;
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .ep-r-qr-caption {
+    max-width: 150px;
+  }
+
+  .ep-r-divider {
+    margin: 18px 40px 0;
+  }
+
+  .ep-r-meta {
+    padding: 14px 40px 0;
+  }
+
+  .ep-r-footer {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 18px 40px 30px;
+    text-align: left;
+  }
+}
+
+/* ---------- Action buttons ---------- */
+
+.ep-receipt-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.ep-receipt-actions .btn {
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 9px 22px;
+  border: 1px solid var(--ep-gold-soft);
+}
+
+.ep-receipt-actions .btn-light {
+  background: #fff;
+  color: var(--ep-purple);
+}
+
+.ep-receipt-actions .btn-festive {
+  background: linear-gradient(135deg, var(--ep-purple-light), var(--ep-purple-deep));
+  color: var(--ep-gold-bright);
+  border-color: var(--ep-gold);
+}
+
+.ep-receipt-actions .btn:disabled {
+  opacity: 0.6;
+}
+
+/* ---------- Capture-hide utility ---------- */
+.download-hidden {
+  display: none !important;
+}

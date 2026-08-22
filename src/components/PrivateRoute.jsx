@@ -33,7 +33,7 @@ const PrivateRoute = ({ children, roles }) => {
             const fallback =
                 role === 'SUPER_ADMIN' ? '/superadmin/dashboard' :
                 role === 'EVENT_ORGANIZER' ? '/admin/dashboard' :
-                role === 'EVENT_MANAGER' ? '/em/dashboard' :
+                role === 'COLLECTION_EXECUTIVE' ? '/em/dashboard' :
                 '/signin';
             return <Navigate to={fallback} replace />;
         }

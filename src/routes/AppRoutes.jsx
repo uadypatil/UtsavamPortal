@@ -111,7 +111,7 @@ const AppRoutes = () => {
         <Route
           path="/em"
           element={
-            <PrivateRoute roles={["EVENT_MANAGER"]}>
+            <PrivateRoute roles={["COLLECTION_EXECUTIVE"]}>
               <EventManagerBase />
             </PrivateRoute>
           }

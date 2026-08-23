@@ -57,7 +57,7 @@ export const donationsApi = {
     return unwrap({ data });
   },
 
-  filter: async (seasonId, eventId, collectionExecutiveId) => {
+  filter: async ({ seasonId, eventId, collectionExecutiveId }) => {
     const query = new URLSearchParams();
 
     if (seasonId) query.append("seasonId", seasonId);

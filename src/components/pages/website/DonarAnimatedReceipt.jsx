@@ -361,7 +361,7 @@ function DonerAnimatedReceipt() {
               </button>
               <button
                 className="btn btn-festive"
-                onClick={handleShare}
+                    onClick={handleShare}
                 disabled={busy}
               >
                 <i className="bi bi-share-fill me-1"></i> Share to Story

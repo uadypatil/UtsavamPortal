@@ -42,11 +42,13 @@ function EventManagerHome() {
       setLoading(true);
       setLoadError("");
       try {
-        const data = await donationsApi.filter(
-          user.seasonId ? { seasonId: user.seasonId } : undefined,
-          user.eventId ? { eventId: user.eventId } : undefined,
-          user.id ? { collectionExecutiveId: user.id } : undefined
-        );
+        const filters = {
+          ...(user.seasonId && { seasonId: user.seasonId }),
+          ...(user.eventId && { eventId: user.eventId }),
+          ...(user.id && { collectionExecutiveId: user.id }),
+        };
+
+        const data = await donationsApi.filter(filters);
         const list = Array.isArray(data)
           ? data
           : data?.items || data?.results || [];

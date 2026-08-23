@@ -3,9 +3,9 @@
 // Deliberately NOT built on createRestResource: donations have no create-
 // time id (the server generates the receipt number), no DELETE per the
 // Swagger doc, and several extra read/transition endpoints instead.
-import http, { unwrap } from '../httpClient';
+import http, { unwrap } from "../httpClient";
 
-const BASE = '/donations';
+const BASE = "/donations";
 
 export const donationsApi = {
   /** List/filter donations. `params` can include eventId, status, donorId,
@@ -46,12 +46,28 @@ export const donationsApi = {
   },
 
   getByReceiptNumber: async (receiptNumber) => {
-    const { data } = await http.get(`${BASE}/receipt/${encodeURIComponent(receiptNumber)}`);
+    const { data } = await http.get(
+      `${BASE}/receipt/${encodeURIComponent(receiptNumber)}`,
+    );
     return unwrap({ data });
   },
 
   getSummary: async (eventId) => {
     const { data } = await http.get(`${BASE}/summary/${eventId}`);
+    return unwrap({ data });
+  },
+
+  filter: async (seasonId, eventId, collectionExecutiveId) => {
+    const query = new URLSearchParams();
+
+    if (seasonId) query.append("seasonId", seasonId);
+    if (eventId) query.append("eventId", eventId);
+    if (collectionExecutiveId) {
+      query.append("collectionExecutiveId", collectionExecutiveId);
+    }
+
+    const { data } = await http.get(`${BASE}/filter?${query.toString()}`);
+
     return unwrap({ data });
   },
 };

@@ -16,7 +16,7 @@ import { apiErrorMessage } from "../../services/httpClient";
 import useAuth from "../../hooks/useAuth";
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MODE_TONE = { upi: "indigo", cash: "success", card: "info" };
+const MODE_TONE = { UPI: "indigo", CASH: "success", CARD: "info" };
 
 /**
  * Previously fully static (fake registration count, a hardcoded 5-row
@@ -70,7 +70,7 @@ function EventManagerHome() {
   const registrationsToday = useMemo(() => {
     const todayKey = new Date().toDateString();
     return donations.filter(
-      (d) => d.createdAt && new Date(d.createdAt).toDateString() === todayKey,
+      (d) => d.donation.createdAt && new Date(d.donation.createdAt).toDateString() === todayKey,
     ).length;
   }, [donations]);
 
@@ -80,8 +80,8 @@ function EventManagerHome() {
     const sevenDaysAgo = new Date(now);
     sevenDaysAgo.setDate(now.getDate() - 6);
     donations.forEach((d) => {
-      if (!d.createdAt) return;
-      const dt = new Date(d.createdAt);
+      if (!d.donation.createdAt) return;
+      const dt = new Date(d.donation.createdAt);
       if (dt >= sevenDaysAgo && dt <= now) counts[dt.getDay()] += 1;
     });
     // Order starting from 6 days ago through today, left to right.
@@ -104,7 +104,7 @@ function EventManagerHome() {
     return recent.filter(
       (r) =>
         (r.donorName || "").toLowerCase().includes(q) ||
-        String(r.receiptNumber || "").includes(q),
+        String(r.donation.receiptNumber || "").includes(q),
     );
   }, [recent, search]);
 
@@ -210,17 +210,17 @@ function EventManagerHome() {
               <tbody>
                 {filtered.map((row) => (
                   <tr key={row.id}>
-                    <td className="text-muted">#{row.receiptNumber}</td>
+                    <td className="text-muted">{row.donation.receiptNumber}</td>
                     <td className="fw-medium">{row.donorName || "—"}</td>
-                    <td>₹{Number(row.amount || 0).toLocaleString("en-IN")}</td>
+                    <td>₹{Number(row.donationAmount || 0).toLocaleString("en-IN")}</td>
                     <td>
-                      <Badge tone={MODE_TONE[row.paymentMode] || "neutral"}>
-                        {row.paymentMode || "—"}
+                      <Badge tone={MODE_TONE[row.donation.paymentMode] || "neutral"}>
+                        {row.donation.paymentMode || "—"}
                       </Badge>
                     </td>
                     <td>
                       <Link
-                        to={`/doner/${row.receiptNumber}/receipt`}
+                        to={`/doner/${row.donation.receiptNumber}/receipt`}
                         target="_blank"
                         className="btn btn-sm border-primary text-primary"
                       >

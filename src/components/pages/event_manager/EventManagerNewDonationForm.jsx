@@ -134,6 +134,8 @@ function EventManagerNewDonationForm() {
         donorId = created.id;
       }
 
+      console.log(donorId)
+
       // Step 3: create the donation. The receipt number is NEVER
       // generated here — it comes back from the server.
       const created = await donationsApi.create({

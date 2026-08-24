@@ -93,7 +93,7 @@ export default function SuperAdminReports() {
                         >
                             <option value="">Select an event to view its summary</option>
                             {filteredEvents.map((ev) => (
-                                <option key={ev.id} value={ev.id}>{ev.name || ev.eventName}</option>
+                                <option key={ev._id} value={ev._id}>{ev.name || ev.eventName}</option>
                             ))}
                         </select>
                     </div>

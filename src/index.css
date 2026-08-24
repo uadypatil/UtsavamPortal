@@ -808,7 +808,8 @@ textarea:focus-visible {
   .ep-stat-card { padding: 1.15rem; }
   .ep-stat-card .ep-stat-value { font-size: 1.5rem; }
   .ep-datatable-toolbar { flex-direction: column; align-items: stretch; }
-  .ep-datatable-search { max-width: 100%; }
+  .ep-datatable-search { max-width: 100%;
+      flex: 0 0 100%;}
 }
 
 /* Glass top navbar (event-manager area) */

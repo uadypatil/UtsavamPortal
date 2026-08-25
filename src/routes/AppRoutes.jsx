@@ -42,7 +42,8 @@ import SuperAdminExpenseCategories from "../pages/superadmin/ExpenseCategories";
 import SuperAdminExpenseApprovals from "../pages/superadmin/ExpenseApprovals";
 import SuperAdminReports from "../pages/superadmin/Reports";
 import SuperAdminEvents from "../pages/superadmin/Events";
-import SuperAdminBase from "../components/pages/SUPER_ADMIN/SuperAdminBase";
+import SuperAdminBase from "../components/pages/super_admin/SuperAdminBase";
+
 
 const AppRoutes = () => {
   return (

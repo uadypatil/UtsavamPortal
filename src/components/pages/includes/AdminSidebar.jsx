@@ -10,6 +10,7 @@ const NAV_ITEMS = [
     { to: 'donationcollector', label: 'Donation Collectors', icon: 'bi-people-fill' },
     { to: 'donors', label: 'Donors', icon: 'bi-person-hearts' },
     { to: 'donations', label: 'Donations & Reports', icon: 'bi-cash-coin' },
+    { to: 'expense-categories', label: 'Expense Categories', icon: 'bi-receipt-cutoff' },
     { to: 'expenses', label: 'Expenses', icon: 'bi-receipt-cutoff' },
     { to: 'receipt-template', label: 'Receipt Template', icon: 'bi-file-earmark-ruled' },
 ];

@@ -97,6 +97,7 @@ const AppRoutes = () => {
           <Route path="donationcollector" element={<CollectionExecutive />} />
           <Route path="addDCollector/:donationExecutiveId" element={<UpdateDonationExecutive />} />
           <Route path="addDCollector" element={<AddDonationExecutive />} />
+          <Route path="expense-categories" element={<ExpenseManager />} />
           <Route path="expenses" element={<ExpenseManager />} />
           <Route path="receipt-template" element={<ReceiptTemplateManager />} />
           <Route path="donors" element={<DonorManager />} />

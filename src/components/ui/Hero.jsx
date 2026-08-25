@@ -112,10 +112,10 @@ const Hero = () => {
 
                 {/* Register Mandal */}
                 <a
-                  href="#join"
+                  href="/signin"
                   className="btn u-btn u-btn-primary rounded-pill px-4 py-3"
                 >
-                  Register Your Mandal
+                  Portal Login
                 </a>
 
                 {/* Download / Install PWA */}

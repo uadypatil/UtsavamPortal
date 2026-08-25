@@ -34,7 +34,6 @@ import UpdateDonationExecutive from "../components/pages/admin/UpdateDonationExe
 import PrivateRoute from "../components/PrivateRoute";
 
 // Super Admin
-import SuperAdminBase from "../components/pages/super_admin/SuperAdminBase";
 import SuperAdminDashboard from "../pages/superadmin/Dashboard";
 import SuperAdminUsers from "../pages/superadmin/Users";
 import SuperAdminEventOrganizers from "../pages/superadmin/EventOrganizers";
@@ -43,6 +42,7 @@ import SuperAdminExpenseCategories from "../pages/superadmin/ExpenseCategories";
 import SuperAdminExpenseApprovals from "../pages/superadmin/ExpenseApprovals";
 import SuperAdminReports from "../pages/superadmin/Reports";
 import SuperAdminEvents from "../pages/superadmin/Events";
+import SuperAdminBase from "../components/pages/SUPER_ADMIN/SuperAdminBase";
 
 const AppRoutes = () => {
   return (

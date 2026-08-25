@@ -16,13 +16,13 @@ export default defineConfig({
       manifest: {
         name: "Utsavam",
         short_name: "Utsavam",
-        description: "",
+        description: "Where Tradition Meets Technology",
 
         start_url: "/",
         scope: "/",
         display: "standalone",
 
-        theme_color: "#ffffff",
+        theme_color: '#4F46E5',
         background_color: "#ffffff",
 
         icons: [

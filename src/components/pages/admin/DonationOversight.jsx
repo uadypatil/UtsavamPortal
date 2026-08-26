@@ -48,9 +48,9 @@ export default function DonationOversight() {
   useEffect(() => {
     (async () => {
       try {
-        const data = await eventsApi.list(
-          user.id ? { eventOrganizerId: user.id } : undefined,
-        );
+        const data = await eventsApi.list({
+          eventOrganizerId: user.id || undefined,
+          });
         setEvents(Array.isArray(data) ? data : data?.items || []);
       } catch (e) {
         setError(apiErrorMessage(e, "Unable to load your events."));
@@ -66,6 +66,8 @@ export default function DonationOversight() {
       const params = {};
       if (eventId) params.eventId = eventId;
       if (statusFilter) params.status = statusFilter;
+      if (user.id) params.eventOrganizerId = user.id;
+      if (user.seasonId) params.seasonId = user.seasonId;
       const [donationData, summaryData] = await Promise.all([
         donationsApi.list(params),
         eventId ? donationsApi.getSummary(eventId) : Promise.resolve(null),
@@ -149,7 +151,7 @@ export default function DonationOversight() {
               <option value="">All Events</option>
               {events.map((ev) => (
                 <option key={ev._id} value={ev._id}>
-                  {ev.event_name || ev.name}
+                  {ev.eventName}
                 </option>
               ))}
             </select>

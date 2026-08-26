@@ -4,6 +4,7 @@ import { eventsApi } from "../../../services/endpoints/events";
 import { apiErrorMessage } from "../../../services/httpClient";
 import { useToast } from "../../../context/ToastContext";
 import useConfirm from "../../../context/useConfirm";
+import useAuth from "../../../hooks/useAuth";
 
 const STATUS_VALUES = { active: true, inactive: false };
 
@@ -17,6 +18,7 @@ const STATUS_VALUES = { active: true, inactive: false };
  * shouldn't be duplicated here.
  */
 export default function EventsList() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
   const confirm = useConfirm();
@@ -27,15 +29,14 @@ export default function EventsList() {
   const [search, setSearch] = useState("");
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
-  const organizerId = localStorage.getItem("eventOrganizerId");
-
   const load = async () => {
     setLoading(true);
     setLoadError("");
     try {
-      const data = await eventsApi.list(
-        organizerId ? { eventOrganizerId: organizerId } : undefined,
-      );
+      const data = await eventsApi.list({
+        eventOrganizerId: user.id || undefined,
+        seasonId: user.seasonId || undefined,
+      });
       const list = Array.isArray(data)
         ? data
         : data?.items || data?.results || [];
@@ -202,21 +203,17 @@ export default function EventsList() {
                     <tr key={event.id}>
                       <td className="fw-semibold">{event.eventName}</td>
                       <td>
-                        {
-                          (event.startDate
-                            ? new Date(event.startDate).toLocaleDateString(
-                                "en-GB",
-                              )
-                            : "—")}
+                        {event.startDate
+                          ? new Date(event.startDate).toLocaleDateString(
+                              "en-GB",
+                            )
+                          : "—"}
                       </td>
 
                       <td>
-                        {
-                          (event.endDate
-                            ? new Date(event.endDate).toLocaleDateString(
-                                "en-GB",
-                              )
-                            : "—")}
+                        {event.endDate
+                          ? new Date(event.endDate).toLocaleDateString("en-GB")
+                          : "—"}
                       </td>
                       <td>
                         <span

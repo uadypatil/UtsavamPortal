@@ -63,6 +63,8 @@ export default function EntityListPage({
   allowDelete = true,
   emptyStateHint = "Records you create will show up here.",
   activationField = "isActive",
+  extraColumns = [],
+  listParams = [],
 }) {
   const toast = useToast();
   const confirm = useConfirm();
@@ -130,7 +132,7 @@ export default function EntityListPage({
     setLoadError("");
 
     try {
-      const response = await listFn();
+      const response = await listFn(listParams);
       const safeRows = extractList(response).filter(isObj);
       setRows(safeRows);
     } catch (error) {
@@ -264,7 +266,10 @@ export default function EntityListPage({
 
     setSaving(true);
     try {
-      const payload = { ...form };
+      const payload = {
+        ...form,
+        ...extraColumns,
+      };
       delete payload[idField];
 
       if (modalMode === "create") {

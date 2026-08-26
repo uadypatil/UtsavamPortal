@@ -4,6 +4,7 @@ import { eventsApi } from "../../../services/endpoints/events";
 import { apiErrorMessage } from "../../../services/httpClient";
 import { useToast } from "../../../context/ToastContext";
 import useConfirm from "../../../context/useConfirm";
+import { useAuth } from '../../../hooks/useAuth';
 
 const PAGE_SIZE = 10;
 const STATUS_OPTIONS = ["", "PENDING", "COMPLETED", "REFUNDED"];
@@ -42,13 +43,13 @@ export default function DonationOversight() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const organizerId = localStorage.getItem("eventOrganizerId");
+  const { user } = useAuth();
 
   useEffect(() => {
     (async () => {
       try {
         const data = await eventsApi.list(
-          organizerId ? { eventOrganizerId: organizerId } : undefined,
+          user.id ? { eventOrganizerId: user.id } : undefined,
         );
         setEvents(Array.isArray(data) ? data : data?.items || []);
       } catch (e) {

@@ -34,6 +34,7 @@ export default function Events() {
             icon="bi-calendar-event"
             description="Events run under a Season. Create an Event here, then use its ID when creating the Event Organizer for it."
             api={eventsApi}
+            activationField="isActive"
             idField="id"
             searchKeys={['eventName', 'organizingMandalName']}
             columns={[

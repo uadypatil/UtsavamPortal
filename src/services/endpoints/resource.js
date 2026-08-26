@@ -40,5 +40,13 @@ export function createRestResource(basePath) {
       const { data } = await http.patch(`${basePath}/${id}/status`, { status });
       return unwrap({ data });
     },
+    updateActivation: async (id, isActive) => {
+      const { data } = await http.patch(
+        `${basePath}/${id}/status`,
+        { isActive }
+      );
+
+      return unwrap({ data });
+    },
   };
 }

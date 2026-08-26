@@ -28,7 +28,6 @@ const PrivateRoute = ({ children, roles }) => {
     if (roles && roles.length > 0) {
       const user = getUser();
       const role = getRole() || user.actorType;
-      console.log(role);
         if (!roles.includes(role)) {
             const fallback =
                 role === 'SUPER_ADMIN' ? '/superadmin/dashboard' :

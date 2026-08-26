@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 import '../../../App.css';
 import SuperAdminSidebar from '../includes/SuperAdminSidebar';
 
-function SuperAdminBase() {
+const SuperAdminBase = () => {
     return (
         <div className="wrapper d-flex ep-mesh-bg">
             <SuperAdminSidebar />

@@ -35,7 +35,6 @@ import PrivateRoute from "../components/PrivateRoute";
 import AdminExpenseCategories from "../components/pages/admin/ExpenseCategories";
 
 // Super Admin
-import SuperAdminBase from "../components/pages/super_admin/SuperAdminBase";
 import SuperAdminDashboard from "../pages/superadmin/Dashboard";
 import SuperAdminUsers from "../pages/superadmin/Users";
 import SuperAdminEventOrganizers from "../pages/superadmin/EventOrganizers";
@@ -44,6 +43,8 @@ import SuperAdminExpenseCategories from "../pages/superadmin/ExpenseCategories";
 import SuperAdminExpenseApprovals from "../pages/superadmin/ExpenseApprovals";
 import SuperAdminReports from "../pages/superadmin/Reports";
 import SuperAdminEvents from "../pages/superadmin/Events";
+import SuperAdminBase from "../components/pages/super_admin/SuperAdminBase";
+
 
 
 const AppRoutes = () => {

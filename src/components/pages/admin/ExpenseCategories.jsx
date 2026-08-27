@@ -1,18 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import EntityListPage from "../../superadmin/EntityListPage";
 import { expenseCategoriesApi } from "../../../services/endpoints/expenseCategories";
 import useAuth from "../../../hooks/useAuth";
-import { useEffect } from "react";
 
 export default function ExpenseCategories() {
   const { user } = useAuth();
-  const [seasonId, setSeasonId] = useState("");
-  const [eventOrganizerId, setEventOrganizerId] = useState("");
-
-  useEffect(() => {
-    if (user.seasonId) setSeasonId(user.seasonId);
-    if (user.id) setEventOrganizerId(user.id);
-  }, [user]);
 
   return (
     <EntityListPage
@@ -46,13 +38,13 @@ export default function ExpenseCategories() {
       ]}
       emptyStateHint="No expense categories yet. Organizers can't file expenses until at least one exists."
       extraColumns={{
-        seasonId: seasonId,
-        eventOrganizerId: eventOrganizerId,
+        seasonId: user.seasonId,
+        eventOrganizerId: user.id,
       }}
 
       listParams={{
-        seasonId: seasonId,
-        eventOrganizerId: eventOrganizerId,
+        seasonId: user.seasonId,
+        eventOrganizerId: user.id,
       }}
 
 

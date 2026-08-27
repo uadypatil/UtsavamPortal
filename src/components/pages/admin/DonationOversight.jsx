@@ -4,7 +4,7 @@ import { eventsApi } from "../../../services/endpoints/events";
 import { apiErrorMessage } from "../../../services/httpClient";
 import { useToast } from "../../../context/ToastContext";
 import useConfirm from "../../../context/useConfirm";
-import { useAuth } from '../../../hooks/useAuth';
+import { useAuth } from "../../../hooks/useAuth";
 
 const PAGE_SIZE = 10;
 const STATUS_OPTIONS = ["", "PENDING", "COMPLETED", "REFUNDED"];
@@ -50,7 +50,7 @@ export default function DonationOversight() {
       try {
         const data = await eventsApi.list({
           eventOrganizerId: user.id || undefined,
-          });
+        });
         setEvents(Array.isArray(data) ? data : data?.items || []);
       } catch (e) {
         setError(apiErrorMessage(e, "Unable to load your events."));
@@ -69,7 +69,8 @@ export default function DonationOversight() {
       if (user.id) params.eventOrganizerId = user.id;
       if (user.seasonId) params.seasonId = user.seasonId;
       const [donationData, summaryData] = await Promise.all([
-        donationsApi.list(params),
+        // donationsApi.list(params),
+        donationsApi.filter(params),
         eventId ? donationsApi.getSummary(eventId) : Promise.resolve(null),
       ]);
       setDonations(
@@ -115,9 +116,13 @@ export default function DonationOversight() {
       variant: nextStatus === "REFUNDED" ? "danger" : "success",
     });
     if (!ok) return;
-    setStatusBusyId(donation.id);
+    setStatusBusyId(donation._id);
     try {
-      await donationsApi.setStatus(donation.id, nextStatus);
+      await donationsApi.setStatusKeyVal(
+        donation._id,
+        "donationStatus",
+        nextStatus,
+      );
       toast.success("Donation status updated.");
       await load();
     } catch (error) {
@@ -141,7 +146,7 @@ export default function DonationOversight() {
 
       <div className="ep-chart-card mb-4">
         <div className="row g-3 align-items-end">
-          <div className="col-lg-4 col-md-6">
+          {/* <div className="col-lg-4 col-md-6">
             <label className="form-label fw-semibold">Event</label>
             <select
               className="form-select"
@@ -169,7 +174,7 @@ export default function DonationOversight() {
                 </option>
               ))}
             </select>
-          </div>
+          </div>*/}
           <div className="col-lg-5 col-md-12">
             <label className="form-label fw-semibold">Search</label>
             <div className="ep-search-box">
@@ -248,27 +253,66 @@ export default function DonationOversight() {
                 </thead>
                 <tbody>
                   {rows.map((d) => {
-                    const nextOptions = NEXT_STATUSES[d.status] || [];
+                    const nextOptions =
+                      NEXT_STATUSES[d.donation.donationStatus] || [];
                     const busy = statusBusyId === d._id;
                     return (
                       <tr key={d._id}>
-                        <td className="fw-semibold">{d.receiptNumber}</td>
+                        <td className="fw-semibold">
+                          {d.donation.receiptNumber}
+                        </td>
                         <td>{d.donorName || "—"}</td>
-                        <td>₹{d.amount}</td>
+                        <td>₹{d.donationAmount}/-</td>
                         <td>
                           <span
-                            className={`ep-status ${d.status === "COMPLETED" ? "ep-status--active" : d.status === "REFUNDED" ? "ep-status--danger" : "ep-status--pending"}`}
+                            className={`ep-status ${d.donation.donationStatus === "COMPLETED" ? "ep-status--active" : d.donation.donationStatus === "REFUNDED" ? "ep-status--danger" : "ep-status--pending"}`}
                           >
                             <span />
-                            {d.status}
+                            {d.donation.donationStatus}
                           </span>
                         </td>
                         <td>
-                          {d.createdAt
-                            ? new Date(d.createdAt).toLocaleDateString()
+                          {d.donation.createdAt
+                            ? new Date(
+                                d.donation.createdAt,
+                              ).toLocaleDateString()
                             : "—"}
                         </td>
                         <td className="text-end">
+                          {nextOptions.length === 0 ? (
+                            <span className="text-muted small">—</span>
+                          ) : (
+                            <select
+                              className="form-select form-select-sm"
+                              disabled={busy}
+                              defaultValue=""
+                              onChange={(e) => {
+                                if (e.target.value) {
+                                  handleStatusChange(
+                                    d.donation,
+                                    e.target.value,
+                                  );
+                                  e.target.value = "";
+                                }
+                              }}
+                              style={{ width: "120px", marginLeft: "auto" }}
+                            >
+                              <option value="" disabled>
+                                Status
+                              </option>
+
+                              {nextOptions.map((status) => (
+                                <option key={status} value={status}>
+                                  {status === "COMPLETED"
+                                    ? "Complete"
+                                    : "Refund"}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                        </td>
+
+                        {/* <td className="text-end">
                           {nextOptions.length === 0 ? (
                             <span className="text-muted small">—</span>
                           ) : (
@@ -278,14 +322,16 @@ export default function DonationOversight() {
                                   key={status}
                                   className={`btn btn-sm ${status === "REFUNDED" ? "ep-danger-btn" : "ep-success-btn"}`}
                                   disabled={busy}
-                                  onClick={() => handleStatusChange(d, status)}
+                                  onClick={() => handleStatusChange(d.donation, status)}
                                 >
-                                  Mark {status}
+                                  {status === "COMPLETED"
+                                    ? "Complete"
+                                    : "Refund"}
                                 </button>
                               ))}
                             </div>
                           )}
-                        </td>
+                        </td>*/}
                       </tr>
                     );
                   })}

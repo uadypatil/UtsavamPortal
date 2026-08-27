@@ -3,7 +3,7 @@ import { expensesApi } from "../../../services/endpoints/expenses";
 import { expenseCategoriesApi } from "../../../services/endpoints/expenseCategories";
 import { apiErrorMessage } from "../../../services/httpClient";
 import { useToast } from "../../../context/ToastContext";
-import useConfirm from "../../../context/useConfirm";
+// import useConfirm from "../../../context/useConfirm";
 import useAuth from "../../../hooks/useAuth";
 
 const STATUS_BADGE = {
@@ -34,7 +34,7 @@ const PAYMENT_STATUS_OPTIONS = [
 export default function ExpenseManager() {
   const { user } = useAuth();
   const toast = useToast();
-  const confirm = useConfirm();
+  // const confirm = useConfirm();
 
   const [expenses, setExpenses] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -45,7 +45,7 @@ export default function ExpenseManager() {
   const [form, setForm] = useState({});
   const [formErrors, setFormErrors] = useState({});
   const [saving, setSaving] = useState(false);
-  const [busyId, setBusyId] = useState(null);
+  // const [busyId, setBusyId] = useState(null);
 
   const load = async () => {
     setLoading(true);
@@ -79,7 +79,13 @@ export default function ExpenseManager() {
   }, []);
 
   const openCreate = () => {
-    setForm({ title: "", categoryId: "", amount: "", description: "", expenseDate:"" });
+    setForm({
+      title: "",
+      categoryId: "",
+      amount: "",
+      description: "",
+      expenseDate: "",
+    });
     setFormErrors({});
     setModalMode("create");
   };
@@ -126,8 +132,8 @@ export default function ExpenseManager() {
         title: form.title.trim(),
         categoryId: form.categoryId,
         amount: Number(form.amount),
-        description: form.description?.trim() || "",
-        expenseDate: form.expenseDate
+        note: form.description?.trim() || "",
+        expenseDate: form.expenseDate,
       };
       if (modalMode === "create") {
         await expensesApi.create(payload);
@@ -145,39 +151,39 @@ export default function ExpenseManager() {
     }
   };
 
-  const handleSubmitForApproval = async (expense) => {
-    const ok = await confirm({
-      title: "Submit this expense for approval?",
-      message:
-        "Once submitted, you will not be able to edit it unless a Super Admin requests a revision.",
-      confirmText: "Submit",
-      variant: "success",
-    });
-    if (!ok) return;
-    setBusyId(expense.id);
-    try {
-      await expensesApi.submit(expense.id);
-      toast.success("Expense submitted for approval.");
-      await load();
-    } catch (error) {
-      toast.error(apiErrorMessage(error, "Unable to submit this expense."));
-    } finally {
-      setBusyId(null);
-    }
-  };
+  // const handleSubmitForApproval = async (expense) => {
+  //   const ok = await confirm({
+  //     title: "Submit this expense for approval?",
+  //     message:
+  //       "Once submitted, you will not be able to edit it unless a Super Admin requests a revision.",
+  //     confirmText: "Submit",
+  //     variant: "success",
+  //   });
+  //   if (!ok) return;
+  //   setBusyId(expense.id);
+  //   try {
+  //     await expensesApi.submit(expense.id);
+  //     toast.success("Expense submitted for approval.");
+  //     await load();
+  //   } catch (error) {
+  //     toast.error(apiErrorMessage(error, "Unable to submit this expense."));
+  //   } finally {
+  //     setBusyId(null);
+  //   }
+  // };
 
-  const handlePaymentStatus = async (expense, paymentStatus) => {
-    setBusyId(expense.id);
-    try {
-      await expensesApi.updatePaymentStatus(expense.id, paymentStatus);
-      toast.success("Payment status updated.");
-      await load();
-    } catch (error) {
-      toast.error(apiErrorMessage(error, "Unable to update payment status."));
-    } finally {
-      setBusyId(null);
-    }
-  };
+  // const handlePaymentStatus = async (expense, paymentStatus) => {
+  //   setBusyId(expense.id);
+  //   try {
+  //     await expensesApi.updatePaymentStatus(expense.id, paymentStatus);
+  //     toast.success("Payment status updated.");
+  //     await load();
+  //   } catch (error) {
+  //     toast.error(apiErrorMessage(error, "Unable to update payment status."));
+  //   } finally {
+  //     setBusyId(null);
+  //   }
+  // };
 
   const categoryName = (id) =>
     categories.find((c) => String(c.id) === String(id))?.categoryName || "—";
@@ -242,85 +248,31 @@ export default function ExpenseManager() {
                   <th>Title</th>
                   <th>Category</th>
                   <th>Amount</th>
-                  <th>Status</th>
-                  <th>Payment</th>
+                  <th>Expence date</th>
                   <th className="text-end">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {expenses.map((exp) => {
-                  const badge = STATUS_BADGE[exp.status] || {
-                    label: exp.status,
-                    className: "ep-status--disabled",
-                  };
-                  const isDraft = exp.status === "DRAFT";
-                  const isApproved = exp.status === "APPROVED";
-                  const busy = busyId === exp.id;
+                  // const busy = busyId === exp.id;
                   return (
                     <tr key={exp.id || exp._id}>
                       <td className="fw-semibold">{exp.title}</td>
                       <td>
                         {exp.categoryName || categoryName(exp.categoryId)}
                       </td>
-                      <td>₹{exp.amount?.$numberDecimal || "0"}</td>
-                      <td>
-                        <span className={`ep-status ${badge.className}`}>
-                          <span />
-                          {badge.label}
-                        </span>
-                      </td>
-                      <td>
-                        {isApproved ? (
-                          <select
-                            className="form-select form-select-sm"
-                            style={{ minWidth: 110 }}
-                            value={exp.paymentStatus || "PENDING"}
-                            disabled={busy}
-                            onChange={(e) =>
-                              handlePaymentStatus(exp, e.target.value)
-                            }
-                          >
-                            {PAYMENT_STATUS_OPTIONS.map((o) => (
-                              <option key={o.value} value={o.value}>
-                                {o.label}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          <span className="text-muted small">—</span>
-                        )}
-                      </td>
+                      <td>₹{exp.amount || "0"}/-</td>
+                      <td>{new Date(exp.expenseDate).toLocaleDateString()}</td>
                       <td className="text-end">
-                        <div className="d-flex justify-content-end gap-2">
-                          {isDraft && (
-                            <>
-                              <button
-                                className="btn ep-icon-btn ep-icon-btn--edit"
-                                title="Edit draft"
-                                onClick={() => openEdit(exp)}
-                                disabled={busy}
-                              >
-                                <i className="bi bi-pencil" />
-                              </button>
-                              <button
-                                className="btn ep-action-btn ep-action-btn--indigo btn-sm"
-                                onClick={() => handleSubmitForApproval(exp)}
-                                disabled={busy}
-                              >
-                                {busy ? "Submitting..." : "Submit"}
-                              </button>
-                            </>
-                          )}
-                          {exp.status === "REVISION_REQUESTED" && (
-                            <button
-                              className="btn ep-icon-btn ep-icon-btn--edit"
-                              title="Revise and resubmit"
-                              onClick={() => openEdit(exp)}
-                              disabled={busy}
-                            >
-                              <i className="bi bi-pencil" />
-                            </button>
-                          )}
+                        <div className="d-flex justify-content-center">
+                          <button
+                            className="btn ep-icon-btn ep-icon-btn--edit"
+                            title="Edit draft"
+                            onClick={() => openEdit(exp)}
+                            // disabled={busy}
+                          >
+                            <i className="bi bi-pencil" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -338,6 +290,12 @@ export default function ExpenseManager() {
           onMouseDown={(e) =>
             e.target === e.currentTarget && !saving && closeModal()
           }
+          style={{
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
           <div className="ep-modal">
             <div className="ep-modal__header">
@@ -435,7 +393,10 @@ export default function ExpenseManager() {
                       className={`form-control ${
                         formErrors.expenseDate ? "is-invalid" : ""
                       }`}
-                      value={form.expenseDate ?? new Date().toISOString().split("T")[0]}
+                      value={
+                        form.expenseDate ??
+                        new Date().toISOString().split("T")[0]
+                      }
                       onChange={(e) =>
                         setForm((p) => ({
                           ...p,

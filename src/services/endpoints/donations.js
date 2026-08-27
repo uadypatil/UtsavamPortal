@@ -45,6 +45,13 @@ export const donationsApi = {
     return unwrap({ data });
   },
 
+  setStatusKeyVal: async (id, statusKey, statusVal) => {
+    const { data } = await http.patch(`${BASE}/${id}/status`, {
+      [statusKey]: statusVal,
+    });
+    return unwrap({ data });
+  },
+
   getByReceiptNumber: async (receiptNumber) => {
     const { data } = await http.get(
       `${BASE}/receipt/${encodeURIComponent(receiptNumber)}`,

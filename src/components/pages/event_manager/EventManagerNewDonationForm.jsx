@@ -288,7 +288,7 @@ function EventManagerNewDonationForm() {
 
                 {donation.paymentMode === "UPI" && (
                   <div className="mt-3">
-                    <button
+                    {/* <button
                       type="button"
                       className="btn btn-primary mb-2"
                       onClick={() => setShowQR((v) => !v)}
@@ -301,7 +301,7 @@ function EventManagerNewDonationForm() {
                         alt="Mandal UPI QR"
                         className="img-fluid"
                       />
-                    )}
+                    )}*/}
 
                     <label className="form-label mt-3">
                       Transaction ID<span className="text-danger">*</span>

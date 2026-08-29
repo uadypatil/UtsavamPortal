@@ -44,6 +44,8 @@ import SuperAdminExpenseApprovals from "../pages/superadmin/ExpenseApprovals";
 import SuperAdminReports from "../pages/superadmin/Reports";
 import SuperAdminEvents from "../pages/superadmin/Events";
 import SuperAdminBase from "../components/pages/super_admin/SuperAdminBase";
+import AdminProfile from "../components/pages/admin/AdminProfile";
+import PrivacyPolicies from "../components/pages/admin/PrivacyPolicies";
 
 
 
@@ -109,6 +111,8 @@ const AppRoutes = () => {
           <Route path="events/new" element={<Events />} />
           <Route path="events/:eventId/edit" element={<Events />} />
           <Route path="event/:eventid/new" element={<NewEventManager />} />
+          <Route path="profile" element={<AdminProfile />} />
+          <Route path="policies" element={<PrivacyPolicies />} />
         </Route>
 
         {/* Event Manager */}

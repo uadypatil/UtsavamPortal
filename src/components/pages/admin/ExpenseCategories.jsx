@@ -46,8 +46,6 @@ export default function ExpenseCategories() {
         seasonId: user.seasonId,
         eventOrganizerId: user.id,
       }}
-
-
     />
   );
 }

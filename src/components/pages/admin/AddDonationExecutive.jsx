@@ -38,7 +38,6 @@ function AddDonationExecutive() {
       setSaving(true);
       await collectionExecutivesApi.create({
         seasonId: user?.seasonId,
-        eventId: user?.eventId,
         eventOrganizerId: user?.id,
         fullName: form.fullName.trim(),
         username: form.username.trim().toLowerCase(),

@@ -12,7 +12,8 @@ const NAV_ITEMS = [
     { to: 'donations', label: 'Donations & Reports', icon: 'bi-cash-coin' },
     { to: 'expense-categories', label: 'Expense Categories', icon: 'bi-receipt-cutoff' },
     { to: 'expenses', label: 'Expenses', icon: 'bi-receipt-cutoff' },
-    { to: 'receipt-template', label: 'Receipt Template', icon: 'bi-file-earmark-ruled' },
+    // { to: 'receipt-template', label: 'Receipt Template', icon: 'bi-file-earmark-ruled' },
+    // { to: 'profile', label: 'Profile', icon: 'bi-person' },
 ];
 
 function AdminSidebar() {
@@ -50,6 +51,11 @@ function AdminSidebar() {
                         </li>
                     ))}
                     <li className="nav-item mt-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                        <Link className="ep-nav-link" to="policies">
+                            <i className="bi bi-shield"></i> Privacy Policies
+                        </Link>
+                    </li>
+                    <li className="nav-item" >
                         <Link className="ep-nav-link" to="/logout">
                             <i className="bi bi-box-arrow-right"></i> Logout
                         </Link>
@@ -83,6 +89,11 @@ function AdminSidebar() {
                                 </Link>
                             </li>
                         ))}
+                        <li className="nav-item mt-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                            <Link className="ep-nav-link" to="/policies">
+                                <i className="bi bi-shild"></i> Privacy Policies
+                            </Link>
+                        </li>
                         <li className="nav-item mt-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
                             <Link className="ep-nav-link" to="/logout">
                                 <i className="bi bi-box-arrow-right"></i> Logout

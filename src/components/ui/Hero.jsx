@@ -3,11 +3,9 @@ import Reveal from "./Reveal";
 import { usePWAInstall } from "../../hooks/usePWAInstall";
 
 /* ============================================================
-   Hero image credit
-   "Ganpati at Pune.JPG" by Yoursamrut — Wikimedia Commons
-   Licensed CC BY-SA 4.0. Swap HERO_IMAGE for your own Mandal's
-   photography whenever you have it — the manifesto's own
-   preference is real photos over stock.
+   Hero image
+   Swap HERO_IMAGE with your own Mandal photography whenever
+   available.
    ============================================================ */
 
 const HERO_IMAGE =
@@ -20,11 +18,7 @@ const HERO_IMAGE =
 const Hero = () => {
   const fieldRef = useRef(null);
 
-  const {
-    canInstall,
-    isInstalled,
-    install,
-  } = usePWAInstall();
+  const { canInstall, isInstalled, install } = usePWAInstall();
 
   /* ============================================================
      Diya animation
@@ -45,9 +39,7 @@ const Hero = () => {
       d.style.left = Math.random() * 100 + "%";
       d.style.top = 15 + Math.random() * 70 + "%";
 
-      d.style.animationDelay = `${Math.random() * 4}s, ${
-        Math.random() * 6
-      }s`;
+      d.style.animationDelay = `${Math.random() * 4}s, ${Math.random() * 6}s`;
 
       field.appendChild(d);
     }
@@ -60,7 +52,7 @@ const Hero = () => {
   const handleDownload = async () => {
     if (!canInstall) {
       alert(
-        "UTSAVAM is not currently available for installation. Please open this website in Chrome or Edge and try again."
+        "UTSAVAM is not currently available for installation. Please open this website in Chrome or Edge and try again.",
       );
 
       return;
@@ -72,36 +64,34 @@ const Hero = () => {
   return (
     <header className="u-hero" id="top">
       {/* Floating diyas */}
-      <div
-        className="u-diya-field"
-        ref={fieldRef}
-      />
+      <div className="u-diya-field" ref={fieldRef} />
 
       <div className="container">
         <div className="row align-items-center g-5">
-
           {/* =====================================================
               Hero Content
           ====================================================== */}
 
           <div className="col-lg-6">
             <Reveal>
+              {/* Launch Badge */}
               <div className="u-hero-badge">
                 <span className="u-dot" />
-                Built exclusively for Ganesh Mandals
+                Now launching for Ganesh Mandals
               </div>
 
+              {/* Main Heading */}
               <h1 className="u-font-display">
                 Where <em>Tradition</em>
                 <br />
                 Meets Technology
               </h1>
 
+              {/* Description */}
               <p className="u-hero-sub">
-                UTSAVAM helps your Mandal manage donations, receipts,
-                volunteers and celebrations — with the same trust and
-                transparency your community has carried forward for
-                generations.
+                UTSAVAM helps your Mandal manage donations, receipts, volunteers
+                and celebrations — with the same trust and transparency your
+                community has carried forward for generations.
               </p>
 
               {/* =================================================
@@ -109,8 +99,7 @@ const Hero = () => {
               ================================================== */}
 
               <div className="d-flex flex-wrap gap-3">
-
-                {/* Register Mandal */}
+                {/* Portal Login */}
                 <a
                   href="/signin"
                   className="btn u-btn u-btn-primary rounded-pill px-4 py-3"
@@ -118,7 +107,7 @@ const Hero = () => {
                   Portal Login
                 </a>
 
-                {/* Download / Install PWA */}
+                {/* PWA Install */}
                 {!isInstalled && (
                   <button
                     type="button"
@@ -129,42 +118,32 @@ const Hero = () => {
                     Download UTSAVAM
                   </button>
                 )}
-
               </div>
 
               {/* =================================================
-                  Hero Trust Statistics
+                  Launch Highlights
               ================================================== */}
 
               <div className="u-hero-trust">
+                {/* Digital Records */}
                 <div>
-                  <span className="u-num">
-                    1,200+
-                  </span>
+                  <span className="u-num">100%</span>
 
-                  <span className="u-lbl">
-                    Connected Mandals
-                  </span>
+                  <span className="u-lbl">Digital Records</span>
                 </div>
 
+                {/* QR Receipts */}
                 <div>
-                  <span className="u-num">
-                    ₹40Cr+
-                  </span>
+                  <span className="u-num">QR</span>
 
-                  <span className="u-lbl">
-                    Donations Managed
-                  </span>
+                  <span className="u-lbl">Smart Receipts</span>
                 </div>
 
+                {/* PWA */}
                 <div>
-                  <span className="u-num">
-                    98%
-                  </span>
+                  <span className="u-num">PWA</span>
 
-                  <span className="u-lbl">
-                    Would Recommend
-                  </span>
+                  <span className="u-lbl">Install & Go</span>
                 </div>
               </div>
             </Reveal>
@@ -189,7 +168,6 @@ const Hero = () => {
               </div>
             </Reveal>
           </div>
-
         </div>
       </div>
     </header>

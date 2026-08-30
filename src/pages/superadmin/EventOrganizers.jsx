@@ -52,7 +52,7 @@ const STATUS_VALUES = { active: 'ACTIVE', inactive: 'INACTIVE' };
 
               { name: 'email', label: 'Email', type: 'email', col: 'col-md-6' },
 
-                { name: 'EventLimit', label: 'Event Limit', type: 'number', col: 'col-md-6' },
+                { name: 'eventLimit', label: 'Event Limit', type: 'number', col: 'col-md-6' },
                 { name: 'collectionExecutiveLimit', label: 'Collection Executive Limit', type: 'number', col: 'col-md-6' },
                 { name: 'address', label: 'Address', type: 'textarea', col: 'col-12' },
             ]}

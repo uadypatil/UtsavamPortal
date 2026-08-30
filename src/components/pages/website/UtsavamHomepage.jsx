@@ -16,6 +16,7 @@ import Testimonials from "../../ui/Testimonials";
 import FAQ from "../../ui/FAQ";
 import Join from "../../ui/Join";
 import Footer from "../../ui/Footer";
+import Pricings from "../../ui/Pricings";
 
 
 /* ============================================================
@@ -34,6 +35,7 @@ export default function UtsavamHomepage() {
       <Spirit />
       <Evolution />
       <Features />
+      <Pricings />
       <Impact />
       <Journey />
       <Experience />

@@ -6,171 +6,209 @@
    ============================================================ */
 
 :root {
-  --ep-purple-deep: var(--receipt-header-end, #180a2b);
-  --ep-purple: var(--receipt-maroon, #2a0f45);
-  --ep-purple-light: var(--receipt-ink, #2a1245);
-  --ep-gold: var(--receipt-gold-deep, #c9a227);
-  --ep-gold-bright: var(--receipt-gold, #e8c874);
-  --ep-gold-soft: rgba(201, 162, 39, 0.45);
-  --ep-ivory: var(--receipt-paper, #f6efe0);
-  --ep-ivory-dark: #ecdfc4;
-  --ep-ink: var(--receipt-ink, #2a1245);
-  --ep-lavender: #c9b6df;
+    --ep-purple-deep: var(--receipt-header-end, #180a2b);
+    --ep-purple: var(--receipt-maroon, #2a0f45);
+    --ep-purple-light: var(--receipt-ink, #2a1245);
+    --ep-gold: var(--receipt-gold-deep, #c9a227);
+    --ep-gold-bright: var(--receipt-gold, #e8c874);
+    --ep-gold-soft: rgba(201, 162, 39, 0.45);
+    --ep-ivory: var(--receipt-paper, #f6efe0);
+    --ep-ivory-dark: #ecdfc4;
+    --ep-ink: var(--receipt-ink, #2a1245);
+    --ep-lavender: #c9b6df;
 }
 
 .ep-receipt-page {
-  width: 100%;
-  padding: 24px 12px 40px;
-  display: flex;
-  justify-content: center;
-  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+    width: 100%;
+    padding: 24px 12px 40px;
+    display: flex;
+    justify-content: center;
+    font-family: system-ui, "Segoe UI", Roboto, sans-serif;
 }
 
 /* ---------- Card shell — sharp, high-contrast ---------- */
 
 .ep-receipt-card {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-  border-radius: 4px;
-  overflow: hidden;
-  background: var(--ep-ivory);
-  background-image: radial-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px);
-  background-size: 3px 3px;
-  box-shadow: 0 4px 0 var(--ep-gold);
-  border: 1px solid var(--ep-gold);
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--ep-ivory);
+    background-image: radial-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+    background-size: 3px 3px;
+    box-shadow: 0 4px 0 var(--ep-gold);
+    border: 1px solid var(--ep-gold);
 }
 
 .ep-receipt-card-inner {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-areas:
-    "header"
-    "donated"
-    "amount"
-    "meta-event"
-    "qr"
-    "divider"
-    "meta"
-    "footer";
-  position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "header"
+        "donated"
+        "amount"
+        "meta-event"
+        "qr"
+        "divider"
+        "meta"
+        "footer";
+    position: relative;
 }
 
 /* ---------- Header band ---------- */
 
 .ep-r-header {
-  grid-area: header;
-  position: relative;
-  padding: 26px 20px 24px;
-  text-align: center;
-  background: radial-gradient(120% 160% at 50% -10%, var(--ep-purple-light) 0%, var(--ep-purple) 45%, var(--ep-purple-deep) 100%);
-  border-bottom: 1px solid var(--ep-gold-soft);
-  overflow: hidden;
+    grid-area: header;
+    position: relative;
+    padding: 26px 20px 24px;
+    text-align: center;
+    background: radial-gradient(
+        120% 160% at 50% -10%,
+        var(--ep-purple-light) 0%,
+        var(--ep-purple) 45%,
+        var(--ep-purple-deep) 100%
+    );
+    border-bottom: 1px solid var(--ep-gold-soft);
+    overflow: hidden;
 }
 
 .ep-r-header-mandala {
-  position: absolute;
-  top: -16px;
-  width: 150px;
-  height: 150px;
-  opacity: 0.4;
-  pointer-events: none;
+    position: absolute;
+    top: -16px;
+    width: 150px;
+    height: 150px;
+    opacity: 0.4;
+    pointer-events: none;
 }
-.ep-r-header-mandala.left { left: -30px; }
-.ep-r-header-mandala.right { right: -30px; transform: scaleX(-1); }
+.ep-r-header-mandala.left {
+    left: -30px;
+}
+.ep-r-header-mandala.right {
+    right: -30px;
+    transform: scaleX(-1);
+}
 
 .ep-r-mascot {
-  width: 70px;
-  height: auto;
-  margin: 0 auto 12px;
-  display: block;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+    width: 70px;
+    height: auto;
+    margin: 0 auto 12px;
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 .ep-r-eyebrow {
-  color: var(--ep-gold-bright);
-  font-family: "Cinzel", Georgia, serif;
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 4px;
-  margin: 0 0 6px;
+    color: var(--ep-gold-bright);
+    font-family: "Cinzel", Georgia, serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 4px;
+    margin: 0 0 6px;
 }
 
 .ep-r-org {
-  color: var(--ep-gold-bright);
-  font-family: "Playfair Display", serif;
-  font-weight: 700;
-  font-size: 23px;
-  line-height: 1.2;
-  margin: 0 0 5px;
+    color: var(--ep-gold-bright);
+    font-family: "Playfair Display", serif;
+    font-weight: 700;
+    font-size: 23px;
+    line-height: 1.2;
+    margin: 0 0 5px;
 }
 
 .ep-r-subtitle {
-  color: var(--ep-lavender);
-  font-size: 13.5px;
-  font-weight: 400;
-  margin: 0;
-  letter-spacing: 0.3px;
+    color: var(--ep-lavender);
+    font-size: 13.5px;
+    font-weight: 400;
+    margin: 0;
+    letter-spacing: 0.3px;
 }
 
 /* ---------- Corner flourishes (ivory section) ---------- */
 
 .ep-r-corner {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  opacity: 0.9;
-  z-index: 2;
-  pointer-events: none;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    opacity: 0.9;
+    z-index: 2;
+    pointer-events: none;
 }
-.ep-r-corner.tl { top: 12px; left: 12px; }
-.ep-r-corner.tr { top: 12px; right: 12px; transform: scaleX(-1); }
-.ep-r-corner.bl { bottom: 12px; left: 12px; transform: scaleY(-1); }
-.ep-r-corner.br { bottom: 12px; right: 12px; transform: scale(-1, -1); }
+.ep-r-corner.tl {
+    top: 12px;
+    left: 12px;
+}
+.ep-r-corner.tr {
+    top: 12px;
+    right: 12px;
+    transform: scaleX(-1);
+}
+.ep-r-corner.bl {
+    bottom: 12px;
+    left: 12px;
+    transform: scaleY(-1);
+}
+.ep-r-corner.br {
+    bottom: 12px;
+    right: 12px;
+    transform: scale(-1, -1);
+}
 
 /* ---------- Donated by ---------- */
 
 .ep-r-donated {
-  grid-area: donated;
-  text-align: center;
-  padding: 26px 26px 2px;
+    grid-area: donated;
+    text-align: center;
+    padding: 26px 26px 2px;
 }
 
 .ep-r-donated-label {
-  color: var(--ep-gold);
-  font-family: "Cinzel", Georgia, serif;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 3px;
-  margin: 0 0 6px;
+    color: var(--ep-gold);
+    font-family: "Cinzel", Georgia, serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 3px;
+    margin: 0 0 6px;
 }
 
 .ep-r-donor-name {
-  font-family: "Playfair Display", serif;
-  font-weight: 700;
-  font-size: 25px;
-  color: var(--ep-ink);
-  margin: 0;
-  word-break: break-word;
+    font-family: "Playfair Display", serif;
+    font-weight: 700;
+    font-size: 25px;
+    color: var(--ep-ink);
+    margin: 0;
+    word-break: break-word;
 }
 
 /* ---------- Amount plaque — sharp rectangle, no clip-path ---------- */
 
 .ep-r-amount {
-  grid-area: amount;
-  padding: 16px 26px 4px;
-  display: flex;
-  justify-content: center;
+    grid-area: amount;
+    padding: 16px 26px 4px;
+    display: flex;
+    justify-content: center;
 }
 
 .ep-r-amount-box {
-  min-width: 200px;
-  padding: 13px 30px;
-  text-align: center;
-  color: var(--ep-gold-bright);
-  background: linear-gradient(135deg, var(--ep-purple-light), var(--ep-purple-deep));
-  border: 1.5px solid var(--ep-gold);
-  border-radius: 3px;
+    position: relative;
+    min-width: 220px;
+    padding: 14px 40px;
+    text-align: center;
+    color: var(--ep-gold-bright);
+    background: linear-gradient(
+        135deg,
+        var(--ep-purple-light),
+        var(--ep-purple-deep)
+    );
+    border: 1.5px solid var(--ep-gold);
+    border-radius: 0;
+    clip-path: polygon(
+        18px 0,
+        calc(100% - 18px) 0,
+        100% 50%,
+        calc(100% - 18px) 100%,
+        18px 100%,
+        0 50%
+    );
 }
 
 .ep-r-amount-value {
@@ -184,112 +222,112 @@
 /* ---------- QR block ---------- */
 
 .ep-r-qr {
-  grid-area: qr;
-  padding: 16px 26px 2px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+    grid-area: qr;
+    padding: 16px 26px 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 .ep-r-qr-box {
-  padding: 8px;
-  background: #ffffff;
-  border: 1.5px solid var(--ep-gold);
-  border-radius: 4px;
-  display: inline-flex;
+    padding: 8px;
+    background: #ffffff;
+    border: 1.5px solid var(--ep-gold);
+    border-radius: 4px;
+    display: inline-flex;
 }
 
 .ep-r-qr-caption {
-  margin: 8px 0 0;
-  font-size: 12.5px;
-  color: var(--ep-ink);
-  opacity: 0.8;
+    margin: 8px 0 0;
+    font-size: 12.5px;
+    color: var(--ep-ink);
+    opacity: 0.8;
 }
 
 /* ---------- Divider ---------- */
 
 .ep-r-divider {
-  grid-area: divider;
-  margin: 12px 26px 0;
-  border-top: 1px dashed var(--ep-gold-soft);
+    grid-area: divider;
+    margin: 12px 26px 0;
+    border-top: 1px dashed var(--ep-gold-soft);
 }
 
 /* ---------- Meta row (date / receipt no) ---------- */
 
 .ep-r-meta {
-  grid-area: meta;
-  padding: 12px 26px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 13px;
-  color: var(--ep-ink);
+    grid-area: meta;
+    padding: 12px 26px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ep-ink);
 }
 
 .ep-r-meta strong {
-  font-weight: 600;
-  letter-spacing: 0.4px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
 }
 
 .ep-r-meta-event {
-  grid-area: meta-event;
-  padding: 4px 26px 0;
-  text-align: center;
-  font-size: 12.5px;
-  color: var(--ep-ink);
-  opacity: 0.7;
+    grid-area: meta-event;
+    padding: 4px 26px 0;
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--ep-ink);
+    opacity: 0.7;
 }
 
 /* ---------- Footer ---------- */
 
 .ep-r-footer {
-  grid-area: footer;
-  padding: 14px 20px 22px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  text-align: center;
+    grid-area: footer;
+    padding: 14px 20px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
 }
 
 .ep-r-footer-brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .ep-r-footer-logo {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--ep-gold);
-  background: #fff;
-  padding: 3px;
-  object-fit: contain;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--ep-gold);
+    background: #fff;
+    padding: 3px;
+    object-fit: contain;
 }
 
 .ep-r-footer-text {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ep-purple);
-  letter-spacing: 0.2px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ep-purple);
+    letter-spacing: 0.2px;
 }
 
 .ep-r-footer-text b {
-  color: var(--ep-gold);
+    color: var(--ep-gold);
 }
 
 .ep-r-demo-badge {
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--ep-ink);
-  background: var(--ep-ivory-dark);
-  border: 1px solid var(--ep-gold-soft);
-  border-radius: 999px;
-  padding: 5px 14px;
-  white-space: nowrap;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--ep-ink);
+    background: var(--ep-ivory-dark);
+    border: 1px solid var(--ep-gold-soft);
+    border-radius: 999px;
+    padding: 5px 14px;
+    white-space: nowrap;
 }
 
 /* ============================================================
@@ -297,98 +335,129 @@
    ============================================================ */
 
 @media (min-width: 760px) {
-  .ep-receipt-card {
-    max-width: 860px;
-  }
+    .ep-receipt-card {
+        max-width: 860px;
+    }
 
-  .ep-receipt-card-inner {
-    grid-template-columns: 1.35fr 1fr;
-    grid-template-areas:
-      "header header"
-      "donated qr"
-      "amount qr"
-      "meta-event qr"
-      "divider divider"
-      "meta meta"
-      "footer footer";
-  }
+    .ep-receipt-card-inner {
+        grid-template-columns: 1.35fr 1fr;
+        grid-template-areas:
+            "header header"
+            "donated qr"
+            "amount qr"
+            "meta-event qr"
+            "divider divider"
+            "meta meta"
+            "footer footer";
+    }
 
-  .ep-r-header {
-    text-align: left;
-    padding: 26px 36px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
+    .ep-r-header {
+        text-align: left;
+        padding: 26px 36px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
 
-  .ep-r-mascot {
-    margin: 0;
-    width: 80px;
-    flex-shrink: 0;
-  }
+    .ep-r-mascot {
+        margin: 0;
+        width: 80px;
+        flex-shrink: 0;
+    }
 
-  .ep-r-header-text { flex: 1; }
+    .ep-r-header-text {
+        flex: 1;
+    }
 
-  .ep-r-header-mandala.left { left: auto; right: 200px; top: -28px; }
-  .ep-r-header-mandala.right { right: -36px; }
+    .ep-r-header-mandala.left {
+        left: auto;
+        right: 200px;
+        top: -28px;
+    }
+    .ep-r-header-mandala.right {
+        right: -36px;
+    }
 
-  .ep-r-donated { text-align: left; padding: 32px 20px 4px 36px; }
+    .ep-r-donated {
+        text-align: left;
+        padding: 32px 20px 4px 36px;
+    }
 
-  .ep-r-amount { justify-content: flex-start; padding: 12px 20px 8px 36px; }
+    .ep-r-amount {
+        justify-content: flex-start;
+        padding: 12px 20px 8px 36px;
+    }
 
-  .ep-r-meta-event { text-align: left; padding: 3px 20px 0 36px; }
+    .ep-r-meta-event {
+        text-align: left;
+        padding: 3px 20px 0 36px;
+    }
 
-  .ep-r-qr {
-    grid-row: 2 / span 3;
-    padding: 32px 36px 8px 20px;
-    align-items: flex-end;
-    text-align: right;
-  }
+    .ep-r-qr {
+        grid-row: 2 / span 3;
+        padding: 32px 36px 8px 20px;
+        align-items: flex-end;
+        text-align: right;
+    }
 
-  .ep-r-qr-caption { max-width: 148px; }
+    .ep-r-qr-caption {
+        max-width: 148px;
+    }
 
-  .ep-r-divider { margin: 16px 36px 0; }
+    .ep-r-divider {
+        margin: 16px 36px 0;
+    }
 
-  .ep-r-meta { padding: 12px 36px 0; }
+    .ep-r-meta {
+        padding: 12px 36px 0;
+    }
 
-  .ep-r-footer {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 16px 36px 26px;
-    text-align: left;
-  }
+    .ep-r-footer {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 16px 36px 26px;
+        text-align: left;
+    }
 }
 
 /* ---------- Action buttons ---------- */
 
 .ep-receipt-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .ep-receipt-actions .btn {
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 9px 22px;
-  border: 1px solid var(--ep-gold-soft);
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 9px 22px;
+    border: 1px solid var(--ep-gold-soft);
 }
 
 .ep-receipt-actions .btn-light {
-  background: #fff;
-  color: var(--ep-purple);
+    background: #fff;
+    color: var(--ep-purple);
 }
 
 .ep-receipt-actions .btn-festive {
-  background: linear-gradient(135deg, var(--ep-purple-light), var(--ep-purple-deep));
-  color: var(--ep-gold-bright);
-  border-color: var(--ep-gold);
+    background: linear-gradient(
+        135deg,
+        var(--ep-purple-light),
+        var(--ep-purple-deep)
+    );
+    color: var(--ep-gold-bright);
+    border-color: var(--ep-gold);
 }
 
-.ep-receipt-actions .btn:disabled { opacity: 0.6; }
+.ep-receipt-actions .btn:disabled {
+    opacity: 0.6;
+}
 
 /* ---------- Capture-hide utility ---------- */
-.download-hidden { display: none !important; }
+.download-hidden {
+    display: none !important;
+}
